@@ -9,6 +9,13 @@
 namespace app\index\controller;
 
 
+use app\common\model\Config;
+use app\common\model\OrdersNotify;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use think\Db;
+use think\Log;
+
 class Cron
 {
    public function tongbu()
@@ -208,4 +215,214 @@ echo clientIp();
         $strTable .= '</table>';
         downloadExcel($strTable, 'daifuorder');
     }
+
+    /**
+     * 定时回调
+     */
+    public function orderCallback()
+    {
+        if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1'){
+            // echo 'error'; die();
+        }
+        $order_wh = [
+            'is_status' => ['eq', 404],
+            'update_time' => ['gt', time()-60*20],
+            'times' => ['lt', 5],
+            'result' => ['neq', 'SUCCESS']
+        ];
+
+        $cron_map = [1,2,5,10,15];
+
+        $orders_notify = Db::name('orders_notify')
+            ->where($order_wh)
+            ->order('create_time desc')
+            ->field('order_id,times,create_time')
+            ->select();
+        echo '=============================';
+        //取一条出来执行
+        foreach ($orders_notify as $order){
+            if ($order['times'] == 0 or ( time()>= ($order['create_time'] + $cron_map[$order['times']] * 60) )){
+                $take_out_order = $order;
+                // try {
+                $orderNotify = (new OrdersNotify())->where(['order_id' => $take_out_order['order_id']])->find();
+                if ($orderNotify['result'] == 'SUCCESS'){
+                    //                Db::commit();
+                    continue;
+                }
+                $order = Db::name('orders')->where('id', $take_out_order['order_id'])->find();
+                $result = $this->doOrderCallback($order, $orderNotify['times']);
+                echo $order['out_trade_no'];
+                if ($result && strtoupper(trim($result['result'])) == 'SUCCESS') {
+                    //成功记录数据
+                    $result['result'] = strtoupper(trim($result['result']));
+                    //  $result['content'] = $result['result'];
+                    (new OrdersNotify())->where(['order_id' => $take_out_order['order_id']])->update($result);
+
+                    \think\Log::notice('订单回调成功，订单号：' . $order['id']);
+                }else if ($result  && $result['result'] != 'SUCCESS'){
+                    //失败记录数据
+
+                    (new OrdersNotify())->where(['order_id' => $take_out_order['order_id']])->update([
+                        'times'   => $orderNotify['times'] + 1,
+                        'update_time'=>time(),
+                        'result' => $result['result']
+                    ]);
+                }else{
+
+                    (new OrdersNotify())->where(['order_id' => $take_out_order['order_id']])->update([
+                        'times'   => $orderNotify['times'] + 1,
+                        'update_time'=>time(),
+                    ]);
+                }
+
+                //}catch (\Exception $e){
+                //  \think\Log::error('定时回调错误：' . $e->getMessage());
+                //return false;
+                // }
+                echo 'success';
+            }
+        }
+
+    }
+
+    private function doOrderCallback($data, $times)
+    {
+        //要签名的数据
+        $where = array();
+        $where['uid'] = $data['uid'];
+        $LogicApi = new \app\common\logic\Api();
+        $appKey = $LogicApi->getApiInfo($where, "key",($data['uid']==100063||$data['uid']==100068|| $data['uid']==100067));
+        $to_sign_data =  $this->buildSignData($data, $appKey["key"],($data['uid']==100063||$data['uid']==100068|| $data['uid']==100067));
+        //签名串
+
+        \think\Log::notice("\r\n");
+        \think\Log::notice("posturl: ".$data['notify_url']);
+        \think\Log::notice("sign data: ".json_encode($to_sign_data));
+        try{
+            $client = new Client();
+            $Config = new Config();
+            $proxy_debug = $Config->where(['name'=>'transfer_ip_list'])->value('value');
+            $orginal_host = $Config->where(['name'=>'orginal_host'])->value('value');
+            $time=5;
+            if($data['uid']==100110||$data['uid']==100099){
+                $time = 9;
+            }
+            if($proxy_debug  && $times >=2 && $orginal_host )
+//                if(config('proxy_debug') && $attempts >=2 )
+            {
+                \think\Log::notice('中转服务器回调'.$times);
+                \think\Log::notice('中转服务器回调'.$orginal_host);
+                //是否需要代理服务器处理让代理请求
+//                    $hosts = config('orginal_host');
+                $hosts = $orginal_host;
+                $url = $hosts.'?notify_url='.urlencode($data['notify_url']);
+                $response = $client->request(
+                    'POST', $url, ['form_params' => $to_sign_data,'timeout'=>5]
+                );
+
+            }else{
+                \think\Log::notice('本服务器回调'.$times);
+                $response = $client->request(
+                    'POST', $data['notify_url'], ['form_params' => $to_sign_data,'timeout'=>5]
+                );
+
+            }
+
+
+            $statusCode = $response->getStatusCode();
+            $contents = $response->getBody()->getContents();
+            \think\Log::notice("订单回调 notify url " . $data['notify_url'] . "data" . json_encode($to_sign_data).'返回内容:'.$contents);
+            \think\Log::notice("response code: ".$statusCode." response contents: ".$contents);
+            print("<info>response code: ".$statusCode." response contents: ".$contents."</info>\n");
+            // JSON转换对象
+            if ( $statusCode == 200 && !is_null($contents)){
+                //判断放回是否正确
+//                    if ($contents == "SUCCESS"){
+                //TODO 更新写入数据
+                return [
+                    'result'   => $contents,
+                    'is_status'   => $statusCode
+                ];
+//                    }
+//                    return false;
+            }
+            return false;
+        }catch (RequestException $e){
+            \think\Log::error('Notify Error:['.$e->getMessage().']');
+            return false;
+        }
+
+        return false;
+    }
+
+    private function buildSignData($data,$md5Key,$need_remark=false){
+        $orderId = $data['id'];
+        //除去不需要字段
+        unset($data['id']);
+        unset($data['uid']);
+        unset($data['cnl_id']);
+        unset($data['puid']);
+        unset($data['status']);
+        unset($data['create_time']);
+        unset($data['update_time']);
+        unset($data['update_time']);
+        unset($data['income']);
+        unset($data['user_in']);
+        unset($data['agent_in']);
+        unset($data['platform_in']);
+        unset($data['currency']);
+        unset($data['client_ip']);
+        unset($data['return_url']);
+        unset($data['notify_url']);
+        unset($data['extra']);
+        unset($data['subject']);
+        unset($data['bd_remarks']);
+        unset($data['visite_show_time']);
+        unset($data['real_need_amount']);
+        unset($data['image_url']);
+        unset($data['request_log']);
+        unset($data['visite_time']);
+        unset($data['request_elapsed_time']);
+        unset($data['channel_pay_url']);
+//        unset($data['cnl_in']);
+
+        $data['amount'] = sprintf("%.2f", $data['amount']);
+        $data['order_status'] = 1;
+        ksort($data);
+
+        $signData = "";
+        foreach ($data as $key=>$value)
+        {
+            $signData = $signData.$key."=".$value;
+            $signData = $signData . "&";
+        }
+        $str = $signData."key=".$md5Key;
+
+        print("<info>md5 str:".$str."</info>\n");
+        Log::notice("md5 str: ".$str);
+        $sgin = md5($str);
+        $data['sign'] = $sgin;
+
+        //加密参数
+        $ordersNotify = new OrdersNotify();
+        $notify = Db('orders_notify')->where(['order_id'=>$orderId])->find();
+        if (empty($notify)) {
+            $n_data['order_id'] = $orderId;
+            $n_data['times'] = 0;
+            $n_data['is_status'] = 404;
+            $n_data['sign_data'] = json_encode($data);
+            $n_data['sign_md5'] = $str;
+            //  Db('orders_notify')->save($n_data);
+        } else {
+            $result = [
+                'sign_data' => json_encode($data),
+                'sign_md5' => $str,
+            ];
+            Db('orders_notify')->where('order_id',$orderId)->update($result);
+        }
+
+        //返回
+        return $data;
+    }
+
 }
