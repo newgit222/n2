@@ -78,7 +78,7 @@ chmod -R 666 data
 #!/bin/bash
 while [ true ]; do
 /bin/sleep 3
-curl "http://45.207.49.129:2699/index/cron/orderCallback"
+curl "http://127.0.0.1/index/cron/orderCallback"
 done
 
 nohup ./callback.sh &
