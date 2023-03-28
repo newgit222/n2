@@ -63,7 +63,7 @@ class PushOrderWait extends Command
                 $output->writeln("Push Order Wait end.... Data:".json_encode($v['id']));
                 //写入订单超时队列
                 Log::notice('拉取订单加入超时队列');
-                (new Queue())->pushJobDataToQueue('AutoOrderClose' , $v , 'AutoOrderClose');
+              //  (new Queue())->pushJobDataToQueue('AutoOrderClose' , $v , 'AutoOrderClose');
             }
 
         }catch (\Exception $e){

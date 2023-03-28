@@ -72,7 +72,7 @@ return [
         // 默认使用的缓存
         'default' => [
             // 驱动方式
-            'type' => 'redis',
+            'type' => 'File',
             // 服务器地址
             'host' => '127.0.0.1',
         ],

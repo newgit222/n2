@@ -302,7 +302,7 @@ class User extends BaseLogic
 
             //邮件场景
             $jobData['scene'] = 'register';
-            $this->logicQueue->pushJobDataToQueue('AutoEmailWork', $jobData, 'AutoEmailWork');
+          //  $this->logicQueue->pushJobDataToQueue('AutoEmailWork', $jobData, 'AutoEmailWork');
 
 
             action_log('新增', '新增商户。UID:' . $user);

@@ -101,7 +101,7 @@ $orderData["remark"] = empty($orderData["remark"]) ? "no": $orderData["remark"];
             $daifuorder = $this->logicOrders->createDaifuPayOrder($orderData);
 
             //写入订单超时队列
-            $this->logicQueue->pushJobDataToQueue('AutoOrderClose' , $daifuorder , 'AutoOrderClose');
+         //   $this->logicQueue->pushJobDataToQueue('AutoOrderClose' , $daifuorder , 'AutoOrderClose');
 
             //提交支付 选择支付路由
 

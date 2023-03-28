@@ -185,7 +185,7 @@ class Orders extends BaseAdmin
                     return ['code' => CodeEnum::ERROR, 'msg' => '必须填写备注' ];
             }
             $OrdersNotify->saveOrderNotify($result);
-            $logicQueue->pushJobDataToQueue('AutoOrderNotify' , $result , 'AutoOrderNotify');
+          //  $logicQueue->pushJobDataToQueue('AutoOrderNotify' , $result , 'AutoOrderNotify');
             //单独修改补单备注(编辑封闭新增放开原则)todo 此处后期事务处理最好
             $orderModel->where($where)->setField('bd_remarks', $bdRemarks);
         }

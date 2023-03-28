@@ -62,8 +62,8 @@ class Notify extends BaseApi
                 Log::notice('异步消息商户:'.$order->out_trade_no);
                 //异步消息商户
                 $this->logicOrdersNotify->saveOrderNotify($order);
-                Log::notice('提交队列'.$order->out_trade_no);
-                $this->logicQueue->pushJobDataToQueue('AutoOrderNotify' , $order , 'AutoOrderNotify');
+               // Log::notice('提交队列'.$order->out_trade_no);
+              //  $this->logicQueue->pushJobDataToQueue('AutoOrderNotify' , $order , 'AutoOrderNotify');
                 //提交更改
                 Db::commit();
                 return true;

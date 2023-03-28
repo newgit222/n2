@@ -36,12 +36,12 @@ class BaseLogic extends BaseModel
     public function checkFrequent($key= '',$num = 5){
         //API 访问限制
         $name = !empty($key) ? $key : 'client-ip:' . request()->ip();
-        $cache = Cache::store('redis');
-        $value = $cache->get($name);
+//        $cache = Cache::store('redis');
+        $value = Cache::get($name);
         //没有数据
         if (!$value) {
             // 写入ip
-            $cache->set($name, 0, 36000);
+            Cache::set($name, 0, 36000);
         }
         //一天内 次数超过 $num 次 停止本次请求
         if ($value >= $num) {
@@ -49,7 +49,7 @@ class BaseLogic extends BaseModel
             return false;
         }
         //正常范围跟 自增一次
-        return $cache->inc($name);
+        return Cache::inc($name);
     }
 
     /**
