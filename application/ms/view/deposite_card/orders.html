@@ -1,0 +1,166 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__MS__/layui/css/layui.css">
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-toolbar clearfix">
+                        <form class="form-inline pull-right " method="get" action="#!" role="form">
+                            <div class="form-group">
+                                <label class="sr-only" for="trade_no">订单编号</label>
+                                <input class="form-control" type="text" id="trade_no" name="trade_no"
+                                       value="{:input('trade_no','','trim')}" placeholder="请输入订单编号">
+                            </div>
+                            <div class="form-group ">
+                                <label class="sr-only" for="status">状态</label>
+                                <select name="status" class="form-control" id="status">
+                                    <option {if condition="$status eq -1"}selected{/if} value="-1">全部</option>
+                                    <option {if condition="$status eq 0"}selected{/if} value="0">申请中</option>
+                                    <option {if condition="$status eq 1"}selected{/if} value="1">成功</option>
+                                    <option {if condition="$status eq 2"}selected{/if} value="2">失败</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">开始时间</label>
+                                <input type="text" class="layui-input" id="start_time" name="start_time"
+                                       value="<?php  echo input('start_time',''); ?>"
+                                       placeholder="请选择开始时间">
+                                <!--<input class="form-control js-datetimepicker " type="text" id="example-datetimepicker" name="start_time"   placeholder="请选择开始时间" value="{:input('start_time',date('Y-m-d'),'trim')}" data-side-by-side="true" data-locale="zh-cn"  data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group ">
+                                <label class="sr-only">结束时间</label>
+                                <input type="text" class="layui-input" id="end_time" name="end_time"
+                                       value="<?php  echo input('end_time',''); ?>"
+                                       placeholder="请选择结束时间">
+                                <!--<input class="form-control js-datetimepicker" type="text" id="example-datetimepicker2" name="end_time" placeholder="请选择结束时间" value="{:input('end_time',date('Y-m-d',strtotime('+1 day')),'trim')}" data-side-by-side="true" data-locale="zh-cn"   data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">搜索</label>
+                                <button class="btn btn-primary form-control" type="submit">搜索</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">重置</label>
+                                <a href="{:url('index')}" class="btn btn-danger form-control" type="reset">重置</a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>充值订单号</th>
+                                    <th>金额</th>
+                                    <th>商户UID</th>
+                                    <th>充值商户</th>
+                                    <th>银行卡</th>
+                                    <th>银行账户名</th>
+                                    <th>银行卡号</th>
+                                    <th>支行名称</th>
+                                    <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>最后更新时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="list" id="v"}
+                                <tr>
+                                    <td><?php echo $v['id'];?></td>
+                                    <td><?php echo $v['trade_no'];?></td>
+                                    <td><?php echo $v['amount'];?></td>
+                                    <td><?php echo $v['uid'];?></td>
+                                    <td><?php echo $v['username'];?></td>
+                                    <td><?php echo $v['name'];?></td>
+                                    <td><?php echo $v['bank_account_username'];?></td>
+                                    <td><?php echo $v['bank_account_number'];?></td>
+                                    <td><?php echo $v['bank_account_address'];?></td>
+                                    <td>
+                                        {switch name="v.status" }
+                                        {case value="2" }
+                                        <button type="button" class="btn btn-danger btn-xs ">失败</button>
+                                        {/case}
+                                        {case value="0"}
+                                        <button type="button" class="btn  btn-warning  btn-xs ">申请中</button>
+                                        {/case}
+                                        {case value="1"}
+                                        <button type="button" class="btn  btn-success btn-xs ">成功</button>
+                                        {/case}
+                                        {default /}
+                                        <button type="button" class="btn btn-danger btn-xs ">失败</button>
+                                        {/switch}
+                                    </td>
+
+                                    <td><?php echo $v['create_time'];?></td>
+                                    <td><?php echo $v['update_time'];?></td>
+
+                                    <td style="font-size:12px;">
+                                        {if condition="$v['status'] == '0'"}
+                                        <a href="javascript:if(confirm('确定审核通过吗？')){ajaxUrl('{:url('auditSuccess',['id'=>$v['id']])}')}"  class="btn btn-xs btn-success">审核通过</a>
+                                        <a href="javascript:if(confirm('确定驳回吗？')){ajaxUrl('{:url('auditError',['id'=>$v['id']])}')}"  class="btn btn-xs btn-danger">驳回</a>
+                                        {/if}
+                                    </td>
+                                </tr>
+                                {/volist}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {$page}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__MS__/layui//layui.js"></script>
+<script type="text/javascript" src="__COMMON__/js/clipboard.min.js"></script>
+
+<script type="text/javascript">
+
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#start_time'
+            , type: 'datetime'
+        });
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            , type: 'datetime'
+        });
+
+    })
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+
+
+.hide {
+    display: none;
+}
+.account-regist-btn-disabled{
+    background-color: #CCC !important;
+    cursor: default !important;
+}
+.account-tip-cont {
+    height: 19px;
+}
+.c-error-icon {
+    background: url('../images/error-icon.png') no-repeat;
+    background-size: cover;
+    margin: 0 5px;
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+.c-tip-text {
+    font-size: 14px;
+    color: #999;
+    float: left;
+}
+
+.c-hide {
+    display: none;
+}
+.account-input-cont {
+    padding: 20px 0 10px 0;
+}
+.account-input {
+    width: 100%;
+    height: 50px;
+    border-radius: 4px;
+    border: 1px solid #AAA;
+    font-size: 22px;
+    padding: 0px 20px;
+}
+
+.account-register-success-image {
+    background: url("../images/register-success-icon.png") no-repeat;
+    background-size: cover;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto;
+}
+
+.account-register-fail-image {
+    background: url("../images/register-fail-icon.png") no-repeat;
+    background-size: cover;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto;
+}
+
+.c-error-icon {
+    background: url("../images/error-icon.png") no-repeat;
+    background-size: cover;
+    margin: 0 5px;
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+
+.c-tip-cont {
+    height: 19px;
+    margin-bottom: 10px;
+    clear: both;
+}
+
+.c-tip-icon {
+    background: url("../images/tip-icon.png") no-repeat;
+    background-size: cover;
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+
+.c-tip-icon-green {
+    background: url("../images/green-icon.png") no-repeat;
+    background-size: cover;
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+
+.c-tip-icon-correct {
+    background: url("../images/tip-icon-correct.png") no-repeat;
+    background-size: cover;
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+.c-checkbox {
+    background: url("../images/checkbox-btn.png") no-repeat;
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 10px;
+}
+.c-checkbox-checked {
+    background: url("../images/checkbox-btn-checked.png") no-repeat;
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 10px;
+}
+.c-input-checked-icon {
+    background: url("../images/input-checked-icon.png") no-repeat;
+    background-size: cover;
+    width: 23px;
+    height: 16px;
+    position: absolute;
+    top: 38px;
+    right: 14px;
+}
+.c-tip-text-black {
+    font-size: 14px;
+    color: #000;
+    float: left;
+}
+
+.account-tel-cont {
+    position: relative;
+    height: 52px;
+}
+
+.account-free-btn {
+    width: 30%;
+    height: 50px;
+    border: 1px solid #00B374;
+    border-radius: 4px 0 0 4px;
+    float: left;
+    text-align: center;
+    line-height: 50px;
+    color: #00B374;
+    font-size: 16px;
+}
+
+.account-tel {
+    width: 70%;
+    height: 50px;
+    border-radius: 0 4px 4px 0;
+    border: 1px solid #AAA;
+    font-size: 22px;
+    padding: 0px 20px;
+    float: left;
+    border-left: none;
+}
+
+.account-verify-cont {
+    margin-top: 20px;
+    height: 52px;
+    margin-bottom: 10px;
+}
+
+.account-verify-input {
+    width: 50%;
+    height: 50px;
+    border: 1px solid #AAA;
+    border-radius: 4px;
+    float: left;
+    margin-right: 20px;
+    padding: 0 20px;
+    font-size: 16px;
+}
+
+.c-btn-primary {
+    background-color: #00ceff;
+    color: #FFF;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.account-verify-btn-disable {
+    background-color: #CCC !important;
+    cursor: default !important;
+}
+
+.account-verify-btn {
+    width: 38%;
+    height: 52px;
+    color: #FFF;
+    background-color: #00ceff;
+    text-align: center;
+    line-height: 52px;
+    font-size: 18px;
+    border-radius: 4px;
+    float: left;
+    cursor: pointer;
+}
+
+.account-protocol-tip-cont {
+    height: 19px;
+}
+.account-protocol {
+    font-size: 14px;
+    color: #999;
+    padding-top: 20px;
+}
+#checked {
+ margin-top: -3px;
+}

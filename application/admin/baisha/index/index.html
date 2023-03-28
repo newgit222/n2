@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="keywords" content="{$site.seo_title|default='中通聚合支付'} - 后台管理">
+    <meta name="description" content="{$site.seo_title|default='中通聚合支付'} - 后台管理">
+    <meta name="author" content="yinq">
+    <title>{$site.seo_title|default="中通聚合支付"} - 后台管理</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="stylesheet" type="text/css" href="__ADMIN__/baisha/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css" href="__ADMIN__/baisha/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="__ADMIN__/baisha/js/bootstrap-multitabs/multitabs.min.css">
+    <link rel="stylesheet" type="text/css" href="__ADMIN__/baisha/css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="__ADMIN__/baisha/css/style.min.css">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+
+            <!-- logo -->
+            <div id="logo" class="sidebar-header" style="height: 7.4%">
+                <a href="admin.html">
+                    <!--<img src="__ADMIN__/baisha/images/logo-sidebar.png" title="LightYear" alt="LightYear" />-->
+                    <h3>{$site.seo_title|default="中通聚合支付"}</h3>
+                </a>
+            </div>
+            <div class="lyear-layout-sidebar-info lyear-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav-drawer">
+                        <li class="nav-item active"> <a class="multitabs" href="{:url('admin/Index/welcome')}"> <span>后台首页</span></a> </li>
+                        <!--<li class="nav-item nav-item-has-subnav">-->
+                            <!--<a href="javascript:void(0)"><i class="mdi mdi-palette"></i> <span>UI 元素</span></a>-->
+                            <!--<ul class="nav nav-subnav">-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_typography.html">排版</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_grid.html">栅格</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_icon.html">图标</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_alerts.html">警告框</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_buttons.html">按钮</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_button_group.html">按钮组</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_cards.html">卡片</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_tables.html">表格</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_modal.html">模态框</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_dropdown.html">下拉菜单</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_tooltips.html">工具提示</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_tabs.html">标签页</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_pagination.html">分页</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_popovers.html">POP提示</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_images.html">图片</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_badges.html">徽章</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_progress.html">进度条</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_list_group.html">列表组</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_media_object.html">媒体对象</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_navbar.html">导航栏</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_scrollspy.html">滚动监听</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_spinners.html">加载状态</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_toasts.html">消息弹窗</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_timeline.html">时光轴</a> </li>-->
+                                <!--<li> <a class="multitabs" href="lyear_ui_other.html">其他</a> </li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        {$menu_view1}
+
+                    </ul>
+                </nav>
+
+
+            </div>
+
+        </aside>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <header class="lyear-layout-header">
+
+            <nav class="navbar">
+
+                <div class="navbar-left">
+                    <div class="lyear-aside-toggler">
+                        <span class="lyear-toggler-bar"></span>
+                        <span class="lyear-toggler-bar"></span>
+                        <span class="lyear-toggler-bar"></span>
+                    </div>
+                </div>
+
+                <ul class="navbar-right d-flex align-items-center">
+                    <li class="dropdown dropdown-notice">
+            <!--<span data-toggle="dropdown" class="icon-item">-->
+              <!--<i class="mdi mdi-bell-outline"></i>-->
+              <!--<span class="badge badge-danger">10</span>-->
+            <!--</span>-->
+                        <!--<div class="dropdown-menu dropdown-menu-right">-->
+                            <!--<div class="lyear-notifications">-->
+
+                                <!--<div class="lyear-notifications-title clearfix"  data-stopPropagation="true"><a href="#!" class="float-right">查看全部</a>你有 10 条未读消息</div>-->
+                                <!--<div class="lyear-notifications-info lyear-scroll">-->
+                                    <!--<a href="#!" class="dropdown-item" title="树莓派销量猛增，疫情期间居家工作学习、医疗领域都需要它">树莓派销量猛增，疫情期间居家工作学习、医疗领域都需要它</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="GNOME 用户体验团队将为 GNOME Shell 提供更多改进">GNOME 用户体验团队将为 GNOME Shell 提供更多改进</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="Linux On iPhone 即将面世，支持 iOS 的双启动">Linux On iPhone 即将面世，支持 iOS 的双启动</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="GitHub 私有仓库完全免费面向团队提供">GitHub 私有仓库完全免费面向团队提供</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="Wasmtime 为 WebAssembly 增加 Go 语言绑定">Wasmtime 为 WebAssembly 增加 Go 语言绑定</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="红帽借“订阅”成开源一哥，首创者 Cormier 升任总裁">红帽借“订阅”成开源一哥，首创者 Cormier 升任总裁</a>-->
+                                    <!--<a href="#!" class="dropdown-item" title="Zend 宣布推出两项 PHP 新产品">Zend 宣布推出两项 PHP 新产品</a>-->
+                                <!--</div>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+                    </li>
+                    <!--切换主题配色-->
+                    <li class="dropdown dropdown-skin">
+                        <span data-toggle="dropdown" class="icon-item"><i class="mdi mdi-palette"></i></span>
+                        <ul class="dropdown-menu dropdown-menu-right" data-stopPropagation="true">
+                            <li class="drop-title"><p>LOGO</p></li>
+                            <li class="drop-skin-li clearfix">
+                <span class="inverse">
+                  <input type="radio" name="logo_bg" value="default" id="logo_bg_1" checked>
+                  <label for="logo_bg_1"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_2" id="logo_bg_2">
+                  <label for="logo_bg_2"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_3" id="logo_bg_3">
+                  <label for="logo_bg_3"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_4" id="logo_bg_4">
+                  <label for="logo_bg_4"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_5" id="logo_bg_5">
+                  <label for="logo_bg_5"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_6" id="logo_bg_6">
+                  <label for="logo_bg_6"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_7" id="logo_bg_7">
+                  <label for="logo_bg_7"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="logo_bg" value="color_8" id="logo_bg_8">
+                  <label for="logo_bg_8"></label>
+                </span>
+                            </li>
+                            <li class="drop-title"><p>头部</p></li>
+                            <li class="drop-skin-li clearfix">
+                <span class="inverse">
+                  <input type="radio" name="header_bg" value="default" id="header_bg_1" checked>
+                  <label for="header_bg_1"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_2" id="header_bg_2">
+                  <label for="header_bg_2"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_3" id="header_bg_3">
+                  <label for="header_bg_3"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_4" id="header_bg_4">
+                  <label for="header_bg_4"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_5" id="header_bg_5">
+                  <label for="header_bg_5"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_6" id="header_bg_6">
+                  <label for="header_bg_6"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_7" id="header_bg_7">
+                  <label for="header_bg_7"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="header_bg" value="color_8" id="header_bg_8">
+                  <label for="header_bg_8"></label>
+                </span>
+                            </li>
+                            <li class="drop-title"><p>侧边栏</p></li>
+                            <li class="drop-skin-li clearfix">
+                <span class="inverse">
+                  <input type="radio" name="sidebar_bg" value="default" id="sidebar_bg_1" checked>
+                  <label for="sidebar_bg_1"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_2" id="sidebar_bg_2">
+                  <label for="sidebar_bg_2"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_3" id="sidebar_bg_3">
+                  <label for="sidebar_bg_3"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_4" id="sidebar_bg_4">
+                  <label for="sidebar_bg_4"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_5" id="sidebar_bg_5">
+                  <label for="sidebar_bg_5"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_6" id="sidebar_bg_6">
+                  <label for="sidebar_bg_6"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_7" id="sidebar_bg_7">
+                  <label for="sidebar_bg_7"></label>
+                </span>
+                                <span>
+                  <input type="radio" name="sidebar_bg" value="color_8" id="sidebar_bg_8">
+                  <label for="sidebar_bg_8"></label>
+                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--切换主题配色-->
+                    <li class="dropdown dropdown-profile">
+                        <a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle">
+                            <!--<img class="img-avatar img-avatar-48 m-r-10" src="__ADMIN__/baisha/images/users/avatar.jpg" alt="笔下光年" />-->
+                            <span>{$admin_info.nickname}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a class="multitabs dropdown-item" data-url="{:url('admin/System/profile')}" href="javascript:void(0)"><i class="mdi mdi-account"></i> 基本资料</a>
+                            </li>
+
+                            <li>
+                                <a class="multitabs dropdown-item" data-url="{:url('admin/System/changepwd')}" href="javascript:void(0)"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                            </li>
+                            <li>
+                                <a class="multitabs dropdown-item" data-url="{:url('admin/admin/blndGoogle')}" href="javascript:void(0)"><i class="mdi mdi-lock-outline"></i> 绑定Google</a>
+                            </li>
+
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{:url('admin/login/logout')}"><i class="mdi mdi-logout-variant"></i> 退出登录</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </nav>
+
+        </header>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div id="iframe-content"></div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="__ADMIN__/baisha/js/jquery.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/popper.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/bootstrap-multitabs/multitabs.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/baisha/js/index.min.js"></script>
+
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index',function () {
+        var $ = layui.$
+            ,form = layui.form
+            ,upload = layui.upload ;
+
+
+        {php}   if($is_channel_statistics){   {/php}
+
+            layer.open({
+                type: 2,
+                title: '渠道统计',
+                shadeClose: true,
+                shade: false,
+                offset:'rt',
+                maxmin: true, //开启最大化最小化按钮
+                area: ['830px', '300px'],
+                content: '{:url("channel/statistics")}'
+            });
+            {php}  }  {/php}
+
+        })
+
+
+
+
+</script>
+
+</body>
+</html>

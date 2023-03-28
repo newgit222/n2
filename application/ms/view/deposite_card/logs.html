@@ -1,0 +1,110 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__MS__/layui/css/layui.css">
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-toolbar clearfix">
+                        <form class="form-inline pull-right " method="get" action="" role="form">
+                            <div class="form-group">
+                                <label class="sr-only" for="bank_account_number">银行卡号</label>
+                                <input class="form-control" type="text" id="bank_account_number"
+                                       name="bank_account_number"
+                                       value="{:input('bank_account_number','','trim')}" placeholder="请输入银行卡号号">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">开始时间</label>
+                                <input type="text" class="layui-input" id="start" name="start" value="<?php  echo $request->param('start',date('Y-m-d 00:00:00')) ?>" placeholder="请选择开始时间">
+                                <!--<input class="form-control js-datetimepicker " type="text" id="example-datetimepicker" name="start_time"   placeholder="请选择开始时间" value="{:input('start_time',date('Y-m-d'),'trim')}" data-side-by-side="true" data-locale="zh-cn"  data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group ">
+                                <label class="sr-only">结束时间</label>
+                                <input type="text" class="layui-input" id="end" name="end" value="<?php  echo $request->param('end',date('Y-m-d 23:59:59')) ?>" placeholder="请选择结束时间">
+                                <!--<input class="form-control js-datetimepicker" type="text" id="example-datetimepicker2" name="end_time" placeholder="请选择结束时间" value="{:input('end_time',date('Y-m-d',strtotime('+1 day')),'trim')}" data-side-by-side="true" data-locale="zh-cn"   data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">搜索</label>
+                                <button class="btn btn-primary form-control" type="submit">搜索</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">重置</label>
+                                <a href="{:url('logs')}" class="btn btn-danger form-control" type="reset">重置</a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>账户名</th>
+                                    <th>卡号</th>
+                                    <th>代付笔数</th>
+                                    <th>代付金额</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="list" id="v"}
+                                <tr>
+                                    <td><?php echo $v['bank_account_username'];?></td>
+                                    <td><?php echo $v['bank_account_number'];?></td>
+                                    <td><?php echo $v['total_count'];?></td>
+                                    <td><?php echo $v['total_amount']?></td>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__MS__/layui//layui.js"></script>
+<script type="text/javascript" src="__COMMON__/js/clipboard.min.js"></script>
+
+<script type="text/javascript">
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#start'
+            , type: 'datetime'
+        });
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end'
+            , type: 'datetime'
+        });
+
+    })
+</script>
+</body>
+</html>

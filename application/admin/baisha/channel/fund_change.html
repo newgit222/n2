@@ -1,0 +1,64 @@
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>中通科技|中通聚合支付 - 后台管理 - 增减余额</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作类型：</label>
+        <div class="layui-input-block">
+            <select name="change_type" lay-verify="required">
+                <option value="0">增加</option>
+                <option value="1">减少</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作资金：</label>
+        <div class="layui-input-block">
+            <input type="number" name="amount" required  placeholder="请输入本次操作资金"  autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作备注</label>
+        <div class="layui-input-block">
+            <textarea name="remarks" lay-verify="required" autocomplete="off" class="layui-textarea">后台管理员账变</textarea>
+        </div>
+    </div>
+    {:token()}
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="app-user-manage-submit" id="app-user-manage-submit" value="确认">
+    </div>
+</div>
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'upload'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,upload = layui.upload ;
+        // form.on('submit(app-user-manage-submit)', function(data){
+        //      alert(242323);return false;
+        //
+        // })
+
+    })
+</script>
+</body>
+</html>

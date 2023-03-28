@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理 - 交易列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__ADMIN__/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!--头部-->
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商户单号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="order_no" placeholder="请输入交易单号" value="{$Request.get.order_no}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">码商用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" placeholder="请输入码商用户名" value="{$Request.get.username}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                 <div class="layui-inline">
+                    <label class="layui-form-label">订单金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="amount" placeholder="请输入订单金额" value="{$Request.get.amount}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">收款账户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="account_name" placeholder="请输入收款账户名" value="{$Request.get.account_name}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+              <div class="layui-inline">
+                    <label class="layui-form-label">付款人姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pay_username" placeholder="请输入付款人姓名" value="{$Request.get.pay_username}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pay_user_name" placeholder="请输入真实姓名" value="{$Request.get.pay_user_name}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="start" class="layui-input app-laydate-item" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="end" class="layui-input app-laydate-item" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单状态</label>
+                    <div class="layui-input-block">
+                        <select name="status" lay-filter="status">
+                            <option value="">请选择一个状态</option>
+                            <option {$Request.get.status == '0' ? 'selected' : '' } value="0">等待支付</option>
+                            <option {$Request.get.status == '1' ? 'selected' : '' } value="1">已支付</option>
+                            <option {$Request.get.status == '2' ? 'selected' : '' } value="2">已关闭</option>
+                            <option {$Request.get.status == '3' ? 'selected' : '' } value="3">已退款</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button  id="param_search" class="layui-btn layuiadmin-btn-order" lay-submit lay-filter="app-order-list-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        搜素
+                    </button>
+                    <button onclick="exportItem(0,layui.$('.layui-form').find('select,input[type=\'text\']').serialize())" class="layui-btn  layui-bg-red layuiadmin-btn-order"  data-type="all" data-events="export">
+                        <i class="layui-icon layui-icon-chart-screen layuiadmin-button-btn"></i>
+                        导出
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!--数据表-->
+        <div class="layui-card-body">
+
+            <table id="app-order-list" lay-filter="app-order-list"></table>
+            <script type="text/html" id="buttonTpl">
+                {{#  if(d.status == '1'){ }}
+                <button class="layui-btn layui-btn-normal layui-btn-xs">完成</button>
+                {{#  } else if(d.status == '0'){ }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">等待</button>
+                {{#  } else if (d.status == '2'){ }}
+                <button class="layui-btn layui-btn-danger layui-btn-xs">已关闭</button>
+                {{# } else if(d.status == '3'){ }}
+                <button class="layui-btn  layui-btn-xs" style="background-color: #0C0C0C">已退款</button>
+                {{# }else{ }} ---
+                {{#  } }}
+            </script>
+
+
+            <script type="text/html" id="table-system-order">
+<!--                {{#  if(d.status != '2'){ }}-->
+<!--                <a class="layui-btn layui-btn-danger  layui-btn-xs" lay-event="budan"><i class="layui-icon layui-icon-edit"></i>补单</a>-->
+<!--                {{#  } }}-->
+                {{#  if(!d.block_ip_id && d.visite_ip){ }}
+                    <a class="layui-btn layui-btn-warm  layui-btn-xs "  data-type="2" lay-event="blockIp"><i class="layui-icon layui-icon-edit"></i>拉黑IP</a>
+                {{#  } }}
+                {{#  if(d.status == '0'||d.status == '2'){ }}
+                <a class="layui-btn layui-btn-danger  layui-btn-xs" lay-event="issueOrder"><i class="layui-icon layui-icon-edit"></i>确认收款</a>
+                <a class="layui-btn layui-btn-warm  layui-btn-xs" lay-event="refundOrder"><i class="layui-icon layui-icon-edit"></i>退款</a>
+                    {{#  if(d.name_abnormal == 1){ }}
+                        <a class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-edit"></i>姓名不符</a>
+                    {{# }else{ }}
+                        <a class="layui-btn layui-btn-warm  layui-btn-xs "  data-type="1" lay-event="abnormal"><i class="layui-icon layui-icon-edit"></i>姓名不符</a>
+                    {{# } }}
+                    {{#  if(d.money_abnormal == 1){ }}
+                        <a class="layui-btn layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-edit"></i>金额不符</a>
+                    {{# }else{ }}
+                        <a class="layui-btn layui-btn-warm  layui-btn-xs "  data-type="2" lay-event="abnormal"><i class="layui-icon layui-icon-edit"></i>金额不符</a>
+                    {{# } }}
+                {{#  } }}
+<!--                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="details"><i class="layui-icon layui-icon-edit"></i>详情</a>-->
+            </script>
+        </div>
+    </div>
+</div>
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script src="__STATIC__/cloudui/js/define.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'user','laydate', 'table'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,laydate = layui.laydate
+            ,table = layui.table;
+
+
+        //同时绑定多个日期
+        lay('.app-laydate-item').each(function(k,v){
+            var  timestamp=(k==0)?' 00:00:00':" 00:00:00";
+            var date=new Date();
+            date.setHours('00');date.setMinutes('00');date.setSeconds('00');
+            if(k==1){
+                date.setHours('23');date.setMinutes('59');date.setSeconds('59');
+            }
+            laydate.render({
+                elem: this,
+                format: 'yyyy-MM-dd',type:'datetime'
+                ,istime:false
+                ,value:date
+                ,trigger: 'click'
+            });
+        });
+
+        //监听搜索
+        form.on('submit(app-order-list-search)', function(data){
+            var field = data.field;
+            console.log($(this).attr('id') == 'param_search');
+            //监听搜索分页为1
+            // if($(this).attr('id') == 'param_search')
+            // {
+            //     field.page=1;
+            // }
+            //执行重载
+            table.reload('app-order-list', {
+                where: field,
+                page :{
+                    curr:1,
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理 - 商户资产列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__ADMIN__/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <!--//隐藏请求用户UID-->
+                <input name="uid" value="{$uid}" hidden>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="remarks" placeholder="请输入账变相关订单号" autocomplete="off" class="layui-input searchItem">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">账变类型</label>
+                    <div class="layui-input-block">
+                        <select name="is_flat_op" lay-filter="is_flat_op" class="searchItem" >
+                            <option value="-1">请选择</option>
+                            <option {$Request.get.is_flat_op == '0' ? 'selected' : '' } value="0">非人红</option>
+                            <option {$Request.get.is_flat_op == '1' ? 'selected' : '' } value="1">人工</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="start" class="layui-input app-laydate-item searchItem" placeholder="yyyy-MM-dd">
+                </div>
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="end" class="layui-input app-laydate-item searchItem" placeholder="yyyy-MM-dd">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="app-balance-details-list-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                    <input type="hidden" name="uid" value="{$uid}" class="searchItem" >
+                    <button onclick="exportItem(5,layui.$('.searchItem').serialize())" class="layui-btn  layui-bg-red layuiadmin-btn-order"  data-type="all" data-events="export">
+                        <i class="layui-icon layui-icon-chart-screen layuiadmin-button-btn"></i>
+                        导出
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-card-body">
+
+            <div class="app-channel-btns" style="margin-bottom: 10px;">
+                <?php $fees =0;  ?>
+                <blockquote class="layui-elem-quote layui-quote-nm">
+                    总计增加：<span id="total" class="layui-badge layui-bg-green">{$data.total_increase}</span> 元
+                    总计减少：<span id="paid" class="layui-badge layui-bg-black">{$data.total_reduce}</span> 元
+                </blockquote>
+            </div>
+
+            <table id="app-balance-details-list" lay-filter="app-balance-details-list"></table>
+            <script type="text/html" id="buttonType">
+                {{#  if(d.type == 'enable'){ }}
+                <span>可用余额</span>
+                {{#  } else if(d.type == 'disable'){ }}
+                <span>冻结余额</span>
+                {{#  } else { }}
+                <span>账户余额</span>
+                {{#  } }}
+            </script>
+            <script type="text/html" id="buttonTpl">
+                {{#  if(d.status == '1'){ }}
+                <button class="layui-btn layui-btn-xs">处理完成</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-danger layui-btn-xs">禁止操作</button>
+                {{#  } }}
+            </script>
+        </div>
+    </div>
+</div>
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script src="__STATIC__/cloudui/js/define.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','laydate', 'balance'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,laydate = layui.laydate
+            ,table = layui.table;
+
+        //同时绑定多个日期
+        lay('.app-laydate-item').each(function(k,v){
+            var  timestamp=(k==0)?' 00:00:00':" 00:00:00";
+            var date=new Date();
+            date.setHours('00');date.setMinutes('00');date.setSeconds('00');
+            if(k==1){
+                date.setHours('23');date.setMinutes('59');date.setSeconds('59');
+            }
+            laydate.render({
+                elem: this,
+                format: 'yyyy-MM-dd',type:'datetime'
+                ,istime:false
+                ,value:date
+                ,trigger: 'click'
+            });
+        });
+
+        //监听搜索
+        form.on('submit(app-balance-details-list-search)', function(data){
+            var field = data.field;
+
+            //执行重载
+            table.reload('app-balance-details-list', {
+                where: field
+            });
+            //取得当前搜索条件下的订单总奖金
+            $.ajax({
+                url : 'searchBalanceCal',
+                type : 'get',
+                data:field,
+                dataType:'json',
+                success : function(data) {
+                    $("#total").text(data.total_increase);
+                    $("#paid").text(data.total_reduce);
+                }
+            })
+
+        });
+
+    });
+</script>
+</body>
+</html>

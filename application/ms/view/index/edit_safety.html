@@ -1,0 +1,48 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="alert alert-danger" role="alert">为了账户安全考虑，需要设置安全码</div>
+                        <form  id="inputForm" method="post" action="{:url('editSafety')}" class="site-form">
+
+                            {php} if(!empty($data['security_pwd'])){  {/php}
+                            <div class="form-group">
+                                <label for="old_security">旧安全码</label>
+                                <input type="password" class="form-control" name="old_security" id="old_security" placeholder="输入账号的原安全码">
+                            </div>
+                            {php}  } {/php}
+                            <div class="form-group">
+                                <label for="security">新安全码</label>
+                                <input type="password" class="form-control" name="security" id="security" placeholder="输入新的安全码">
+                            </div>
+                            <div class="form-group">
+                                <label for="re_security">确认新安全码</label>
+                                <input type="password" class="form-control" name="re_security" id="re_security" placeholder="输入新的安全码">
+                            </div>
+                            <button type="submit" class="btn btn-primary">修改安全码</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+</body>
+</html>

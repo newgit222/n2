@@ -1,0 +1,153 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__AGENT__/layui/css/layui.css">
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <form id="inputForm" action="{:url('qun_add')}" method="post" class="row " enctype="multipart/form-data">
+
+                            <div id="bank_show" >
+                               
+
+                                <div class="form-group col-md-12">
+                                    <label for="bank_account_name">群名字</label>
+                                    <input type="text" class="form-control" id="bank_account_name" name="account_name" value="" placeholder="请输入开户姓名" />
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label for="file">群二维码图片</label>
+                                    <input type="file" name="file" id="file" /><br>
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group col-md-12">
+                                <label >是否激活</label>
+                                <div class="col-xs-12">
+                                    <label class="radio-inline" for="is_active1">
+                                        <input type="radio" checked id="is_active1" name="is_active" value="1">
+                                        是
+                                    </label>
+                                    <label class="radio-inline" for="is_active0">
+                                        <input type="radio" id="is_active0" name="is_active" value="0">
+                                        否
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-md-12">
+                                <label for="security">安全码</label>
+                                <input type="password" class="form-control" id="security" name="security" value="" placeholder="请输入安全码" />
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="add-form">确 定</button>
+                                <button type="button" class="btn btn-default" onclick="javascript:history.back(-1);return false;">返 回</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__AGENT__/layui//layui.js"></script>
+<script>
+
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+    });
+
+
+    function showUID() {
+        //页面层
+
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['260px', '300px'], //宽高
+            content: '<img src="__PUBLIC__/static/images/alipay_uuid.png" width="250px" height="250px" >'
+        });
+    }
+
+
+    function getArea(that,idName =''){
+        var id = 0;
+        if(that){
+            // console.log(123213213)
+            id = $("#"+that).val();
+        }
+        $.post("{:url('common/getArea')}",{id:id},function(data){
+            // console.log(data)
+            if(data.code ==1 ) {
+                var str = '';
+                data.data.forEach(function (element, index) {
+                    str += "<option value= '"+element.id+"'> "+element.name+" </option>"
+                });
+                $("#"+idName).html(str)
+            }else{
+                layer.msg(data.msg);
+            }
+        });
+    }
+
+    function is_show() {
+        var type = $('#type option:selected').val();
+        // console.log(group_id)
+        if(type == 2){
+            $("#account_number_name").text("支付宝账号")
+            // $('#bank_show_true').css('display','none');
+            $('#bank_show').css('display','none');
+            $('#bank_show_false').css('display','block');
+            $('#code_show').css('display','block');
+            $('#is_show_type').css('display','block');
+            $('#alipay_uid').css('display','block');
+        }else if (type ==1) {
+            $("#account_number_name").text("微信账号")
+            // $('#bank_show_true').css('display','none');
+            $('#bank_show').css('display','none');
+            $('#bank_show_false').css('display','block');
+            $('#code_show').css('display','block');
+            $('#is_show_type').css('display','none');
+            $('#alipay_uid').css('display','none');
+        }else if (type==3){
+            $('#is_show_type').css('display','none');
+            $('#code_show').css('display','none');
+            // $('#bank_show_true').css('display','block');
+            $('#bank_show').css('display','block');
+            $('#bank_show_false').css('display','none');
+            $('#alipay_uid').css('display','none');
+        }
+        $('#bank_show_true').css('display','none');
+        // layer.msg(group_id)
+    }
+
+
+    setTimeout(function () {
+        //省市区联动
+        getArea(null,'province_id');
+    },1000)
+</script>
+
+</body>
+</html>

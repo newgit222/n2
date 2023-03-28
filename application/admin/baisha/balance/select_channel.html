@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理 - 选择渠道</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__ADMIN__/style/admin.css" media="all">
+    <link rel="stylesheet" href="__ADMIN__/layui/lay/modules/jquery.js">
+</head>
+<body>
+
+    <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin"  >
+        <div class="layui-form-item">
+            <label class="layui-form-label">渠道：</label>
+            <div class="layui-input-inline">
+                <select name="channel_id" lay-filter="channel_id" lay-verify="required">
+                    <option  value="0">请选择</option>
+                    {volist name="channel" id="vo"}
+                    <option  value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script src="__STATIC__/cloudui/js/define.js"></script>
+
+<script>
+    var channel_id = 0;
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'upload'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,upload = layui.upload ;
+
+
+        form.on('select(channel_id)', function (data) {
+            channel_id = data.value;
+            console.log(channel_id)
+            // categoryName = data.elem[data.elem.selectedIndex].text;
+            form.render('select');
+        });
+
+    });
+
+
+
+    var callbackdata = function () {
+        return {channel_id:channel_id};
+    }
+</script>
+</body>
+</html>

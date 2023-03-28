@@ -1,0 +1,131 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-toolbar clearfix">
+                        <form class="form-inline pull-right " method="get" action="#!" role="form">
+
+                                <div class="form-group ">
+                                    <label class="sr-only" for="bill_type">账变类型</label>
+                                        <select name="bill_type" class="form-control" id="bill_type">
+                                            <option value="0">全部</option>
+                                            {notempty name="billTypes"}
+                                            {foreach $billTypes as $k => $v}
+                                            <option <?php if(Input('bill_type')==$k){echo "selected";} ?> value="{$k}">{$v}</option>
+                                            {/foreach}
+                                        </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="sr-only" for="username">详情</label>
+                                    <input class="form-control" type="text" id="username" name="info" value="{:input('info','','trim')}"  placeholder="请输入用户名">
+                                </div>
+                            <div class="form-group">
+                                <label class="sr-only" >开始时间</label>
+                                <input class="form-control js-datepicker " type="text" id="example-datepicker1" name="start_time"   placeholder="请选择开始时间" value="{:input('start_time',date('Y-m-d'),'trim')}"  data-date-format="yyyy-mm-dd" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only" >结束时间</label>
+                                <input class="form-control js-datepicker" type="text" id="example-datepicker2" name="end_time" placeholder="请选择结束时间" value="{:input('end_time',date('Y-m-d',strtotime('+1 day')),'trim')}"   data-date-format="yyyy-mm-dd" />
+                            </div>
+
+                            <!--<input class="form-control js-datetimepicker" type="text" id="example-datetimepicker" name="add_time" placeholder="请选择具体时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm" />-->
+
+                                <div class="form-group">
+                                    <label class="sr-only" >搜索</label>
+                                    <button class="btn btn-primary form-control" type="submit">搜索</button>
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" >重置</label>
+                                    <a href="{:url('User/bill')}" class="btn btn-danger form-control" type="reset">重置</a>
+                                </div>
+
+
+                        </form>
+
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                <tr>
+                                    <th >ID</th>
+                                    <th >用户名</th>
+                                    <th >账变类型</th>
+                                    <th >事件</th>
+                                    <th >变动前</th>
+                                    <th >变动金额</th>
+                                    <th >变动后</th>
+                                    <th >时间</th>
+                                    <th >金额</th>
+                                    <th >描述</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach $list as $v}
+                                <tr>
+                                    <td ><?php echo $v['id'];?></td>
+                                    <td ><?php echo $v['username'];?></td>
+                                    <td >
+                                        <?php    echo $billTypes[$v['jl_class']]       ?>
+                                    </td>
+                                    <td ><?php echo $v['info'];?></td>
+                                    <td ><?php echo $v['pre_amount'];?></td>
+                                    <td >
+
+                                        <?php  $color = ($v['jc_class'] == '+')?'green':'red'  ?>
+                                          <span style="color: {$color}">
+                                             {$v['jc_class']}<?php echo $v['num'];?>
+                                          </span>
+
+                                    </td>
+                                    <td ><?php echo $v['last_amount'];?></td>
+                                    <td ><?php echo date('Y-m-d H:i:s',$v['addtime']);?></td>
+                                    <td ><?php echo $v['num'];?></td>
+                                    <td ><?php echo $v['info'];?></td>
+
+                                </tr>
+                                {/foreach}
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {$page}
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript">
+    $(function(){
+        $('.search-bar .dropdown-menu a').click(function() {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+</script>
+</body>
+</html>

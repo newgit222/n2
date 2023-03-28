@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="服务平台,13898856898">
+    <meta name="keywords" content="服务平台,13898856898">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="render" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="服务平台13898856898" />
+    <meta name="msapplication-TileColor" content="#0e90d2">
+    <title>财神支付 - 登录 </title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="__STATIC__/index/baisha/css/dashboard.css" rel="stylesheet" />
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/index/baisha/js/fastclick.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .table-hover > tbody > tr:hover {
+            background-color: #cfcfcf;
+        }
+    </style>
+</head>
+<body style="background: none">
+<div id="loading" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: #f8f8f8;opacity: 0.2;z-index: 15000;display: none;">
+    <img alt="" src="__STATIC__/index/baisha/images/loading.gif" style="position: absolute;top: 10%;left: 50%;width: 100px;margin-top: -10px;margin-left: -50px;"><br>
+</div>
+
+
+
+
+<div class="container">
+    <div class="form row">
+        <form class="form-horizontal col-xs-offset-3" id="login_form">
+            <h3 class="form-title">聚合支付 · 后台管理</h3>
+            <div class="col-xs-9">
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <i class="gl glyphicon glyphicon-user"></i>
+                    <input type="text" name="UserId" id="txtUserId" class="form-control required" autofocus="autofocus" maxlength="20" placeholder="请输入您的帐号">
+                </div>
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <i class="gl glyphicon glyphicon-lock"></i>
+                    <input type="password" name="LoginPassword" id="txtLoginPassword" class="form-control required" placeholder="请输入您的密码">
+                </div>
+
+
+                <div class="form-group" style="margin-bottom: 0px;margin-top: 20px;">
+                    <i class="gl glyphicon"></i>
+                    <input style="width: 65%;display: inline-flex" type="text" name="LoginPassword" id="login-verfiy_code" class="form-control required" placeholder="图形验证码">
+                    <img style="width: 30%;height: 34px" onclick="refresh_verfiy(this)" src="{:captcha_src()}" class="layadmin-user-login-codeimg" id="app-user-get-vercode">
+
+                </div>
+
+                <!--图形验证码开始--->
+
+<!--                <div class="form-group" style="margin-bottom: 0px; margin-top: 10px ">-->
+<!--                    <input style="width: 60%" id="login-" type="text" placeholder="图形验证码" autocomplete="off" class="account-input ">-->
+<!--                    &lt;!&ndash;<div class="c-input-checked-icon c-hide login-password-checked"></div>&ndash;&gt;-->
+<!--                </div>-->
+                <!--<div>-->
+                <!--<div class="account-input-cont c-relative">-->
+                <!--<input style="width: 68%" id="login-verfiy_code" type="text" placeholder="图形验证码" autocomplete="off" class="account-input">-->
+                <!--<img height="50px;" width="30%"  onclick="refresh_verfiy(this)" src="{:captcha_src()}" class="layadmin-user-login-codeimg" id="app-user-get-vercode">-->
+
+                <!--<div class="c-input-checked-icon c-hide login-password-checked"></div>-->
+                <!--</div>-->
+                <!--</div>-->
+
+                <!--图形验证码结束--->
+
+                <div class="form-group">
+                    <i class="gl glyphicon glyphicon-lock"></i>
+                    <input type="password" name="SecretCode" id="txtSecretCode" class="form-control required" placeholder="谷歌密钥验证码（未绑定留空）">
+                </div>
+                <div class="form-group" style="margin-top: 25px;margin-bottom: 55px;">
+                    <button type="submit" onclick="DoSubmit(); return false;" id="btnSubmit" class="btn btn-success btn-block pull-right">登 录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<link href="__STATIC__/index/baisha/css/login.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    DoSubmit = function () {
+        var code = "", message = "";
+        var id = $("#txtUserId").val().trim();
+        var pwd = $("#txtLoginPassword").val();
+        var secretCode = $("#txtSecretCode").val();
+        var verfiy_code = $("#login-verfiy_code").val();
+        if (id == '') {
+            swal({ title: "提示", text: "请填写正确的帐号1", icon: "warning"});
+        }
+        else if (pwd == "") {
+            swal({ title: "提示", text: "请填写密码", icon: "warning" });
+        }
+        else {
+
+
+            //请求登入接口
+            $.post("{:url('login')}",{
+                password: pwd,
+                google_code: secretCode,
+                username:id,
+                vercode:verfiy_code,
+            },function (res) {
+                if (res.code == "1") {
+                    swal({ title: "登录成功", text: "正在跳转...", icon: "success", button: false, timer: 2000 }).then(function (isConfirm) {
+                        window.location.href = '/admin/index';
+
+                    });
+                }
+                else {
+                    swal({ title: "错误", text: res.msg, icon: "error" });
+                }
+            })
+
+
+            // $.ajax({
+            //     url: "{:url('login')}",
+            //     type: "POST",
+            //     data: {
+            //         password: pwd,
+            //         google_code: secretCode,
+            //         username:id,
+            //         vercode:verfiy_code,
+            //     },
+            //     isuccess: function (data) {
+            //         console.log(data);
+            //         code = data.code;
+            //         message = data.msg;
+            //     },
+            //     error: function () {
+            //         console.log(456)
+            //         code = '0';
+            //         message = "提交失败";
+            //     },
+            //     icomplete: function () {
+            //         console.log(123)
+            //         if (code == "1") {
+            //             swal({ title: "登录成功", text: "正在跳转...", icon: "success", button: false, timer: 2000 }).then(function (isConfirm) {
+            //                 // if (message=="key")
+            //                 window.location.href = '/index';
+            //                 // else if(true)
+            //                 //     window.location.href = '/';
+            //                 // else
+            //                 //     window.location.href = '';
+            //             });
+            //         }
+            //         else {
+            //             swal({ title: "错误", text: message, icon: "error" });
+            //         }
+            //     }
+            // });
+        }
+    };
+
+    /*
+     * 刷新验证码
+     * @param o
+     */
+    function  refresh_verfiy(o) {
+        $(o).attr('src',"/captcha?t=" + (new Date).getTime());
+    }
+
+    $(function () {
+        FastClick.attach(document.body);
+    });
+</script>
+
+</body>
+</html>

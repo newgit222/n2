@@ -1,0 +1,66 @@
+{extend name="index-layout" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">绑定GOOGLE验证</h4>
+                    <p class="card-description">
+                        为了你的商户资金安全,你可授权绑定GOOGLE验证,谢谢合作！
+                    </p>
+                    <form class="layui-form forms-sample" action="" method="post">
+                        <div class="form-group row">
+                            <label for="UserQQ" class="col-sm-2 col-form-label">绑定GOOGLE身份验证</label>
+                            {if condition="empty($user['is_need_google_verify'])"}
+                            <div class="col-sm-9">
+                                <img src="{$google.google_qr}"><br><br>
+                                <input type="hidden" name="i[google_secret_key]" value="{$google.google_secret}">
+                                <input type="" name="i[google_code]"  value="" class="form-control" id="UserGoogleAccount" placeholder="所需绑定GOOGLE验证码,请扫码获取GOOGLE验证码">
+                            </div>
+                            {else/}
+                            <span style="color: #439aff">已绑定</span>
+                            {/if}
+                        </div>
+                        {if condition="empty($user['is_need_google_verify'])"}
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label"></label>
+                            <div class="col-sm-9">
+                                <button type="button" class="btn btn-success btn-submit-userinfo btn-fw" lay-submit lay-filter="app-user-submitinfo">提交绑定</button>
+                            </div>
+                        </div>
+                        {/if}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>layui.use(['form', 'layer','jquery'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(app-user-submitinfo)',
+            function(data) {
+                console.log(data);
+
+                let field = data.field;
+                console.log(field)
+                //提交
+                $.post("{:url('/index/User/blndGoogle')}",field,function (res) {
+                    if (res.code == 1){setTimeout("location.reload();",1000);}
+                    layer.alert(res.msg);
+                })
+
+
+                return false;
+            });
+
+    });</script>
+{/block}
+{block name="pagejs"}
+

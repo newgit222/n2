@@ -1,0 +1,13 @@
+.idea/
+data/runtime
+
+
+application/api/service/payment/ByPay.php
+application/api/service/payment/HjPay.php
+application/api/service/payment/XmPay.php
+application/api/service/payment/MfPay.php
+error_sign.log
+application/api/service/payment/YqPay.php
+application/admin/view/orders/channel_v2.html
+application/api/service/payment/Create JuhePay API Error
+nginx.htaccess

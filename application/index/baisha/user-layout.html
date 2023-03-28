@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content='{$site.seo_title|default="聚合支付"}'>
+    <meta name="keywords" content='{$site.seo_title|default="聚合支付"}'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="render" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content='{$site.seo_title|default="聚合支付"}' />
+    <meta name="msapplication-TileColor" content="#0e90d2">
+    <title>{block name="site_title"}商户平台{/block} - {$site.seo_title|default="聚合支付"} - 支付技术服务商，让支付简单、专业、快捷 </title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="__STATIC__/index/baisha/css/dashboard.css" rel="stylesheet" />
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/index/baisha/js/fastclick.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .table-hover > tbody > tr:hover {
+            background-color: #cfcfcf;
+        }
+    </style>
+</head>
+<body>
+<div id="loading" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: #f8f8f8;opacity: 0.2;z-index: 15000;display: none;">
+    <img alt="" src="__STATIC__/index/baisha/images/loading.gif" style="position: absolute;top: 10%;left: 50%;width: 100px;margin-top: -10px;margin-left: -50px;"><br>
+</div>
+
+
+
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{:url('index/user/index')}" style="color:#eee;">
+                <!--<img src="__STATIC__/index/baisha/images/logo.png" style="height:20px;float:left;" />-->
+                &nbsp;&nbsp;{$site.seo_title|default="聚合支付"}
+            </a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-">
+                <li><a href="{:url('index/user/index')}">首页</a></li>
+                <li><a href="{:url('index/Order/index')}">订单查询</a></li>
+                <li><a href="{:url('index/balance/paid')}">提现</a></li>
+                <li><a href="{:url('index/balance/account')}">提现账户</a></li>
+                <li><a href="{:url('index/api/channel')}">渠道信息</a></li>
+                <!--<li><a href="/Withdraw/MerAdjust">调账查询</a></li>-->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i>&nbsp;欢迎您，{$user_info.username}</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{:url('index/User/blndGoogle')}">Google密钥</a></li>
+                        <!--<li role="separator" class="divider"></li>-->
+                        <li><a href="{:url('index/User/password')}">修改密码</a></li>
+                        <!--<li><a href="/home/ChangePayPass">修改支付密码</a></li>-->
+                        <li><a href="{:url('index/Login/logout')}">退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div>
+</nav>
+
+{block name="content"}
+
+{/block}
+
+
+{block name="pagejs"}
+
+{/block}
+
+</body>
+</html>

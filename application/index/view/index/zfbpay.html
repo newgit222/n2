@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>支付宝支付</title>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            background-color: #00a2e9;
+        }
+        .btn{
+            display: block;background-color: #fff;padding: 8px 40px;border-radius: 8px;text-decoration:none;color: #00a2e9;font-size:26px;font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+
+<section style="text-align: center;color: #fff">
+    <h1 style="margin: 10px 0" id="save">保存二维码到手机</h1>
+    <p style="font-size: 30px;margin: 10px 0">宝支付扫一扫</p>
+    <img src="{$image_url}" width="250px" id="image"/>
+    <p style="margin: 10px 0;font-size:18px;">订单金额：<span id="money" style="color: red;font-size:50px;"></span>{$amount}元</p>
+    <p style="margin: 10px 0;"> 手机用户截屏二维码到相册,打开宝支付识别</p>
+    <p style="margin: 10px 0;">输入错误金额,则无法到账</p>
+
+</section>
+
+</body>
+</html>
+

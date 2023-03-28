@@ -1,0 +1,434 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__MS__/layui/css/layui.css">
+
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-toolbar clearfix">
+                        <form class="form-inline pull-right " method="get" action="#!" role="form">
+
+
+
+                            <div class="form-group">
+                                <label class="sr-only" for="order_no">订单号</label>
+                                <input class="form-control" type="text" id="order_no" name="order_no" value="{:input('order_no','','trim')}"  placeholder="请输入订单号">
+                            </div>
+                            <div style="display: inline-block">
+                                <!--<label class="layui-form-label"></label>-->
+                                <div class="layui-inline">
+                                    <input type="text" name="gema_username"  value="{:input('gema_username','','trim')}"  placeholder="请输入账号名称" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only" for="username">付款人姓名</label>
+                                <input class="form-control" type="text" id="pay_username" name="pay_username" value="{:input('pay_username','','trim')}"  placeholder="请输入付款人姓名">
+                            </div>
+                       <!--   <div class="form-group">
+                                <label class="sr-only" for="pay_user_name">真实姓名</label>
+                                <input class="form-control" type="text" id="pay_user_name" name="pay_user_name" value="{:input('pay_user_name','','trim')}"  placeholder="请输入真实姓名">
+		       </div>--->
+                           
+			     <div class="form-group">
+                                <label class="sr-only" for="username">订单金额</label>
+                                <input class="form-control" type="text" id="amount" name="amount" value="{:input('amount','','trim')}"  placeholder="请输入订单金额">
+                            </div>
+
+                            <div class="form-group ">
+                                <label class="sr-only" for="status">状态</label>
+                                <select name="status" class="form-control" id="status">
+                                    <option {php} if($status == -1){ echo "selected";} {/php} value="-1">全部</option>
+                                    <option {php} if($status == 0){ echo "selected";} {/php} value="0">待支付</option>
+                                    <option {php} if($status == 1){ echo "selected";} {/php} value="1">已支付</option>
+                                    <option {php} if($status == 2){ echo "selected";}{/php} value="2">已关闭</option>
+                                    <option {php} if($status == 3){ echo "selected";}{/php} value="3">已退款</option>
+                                </select>
+                            </div>
+
+
+
+
+                            <div class="form-group">
+                                <label class="sr-only" >开始时间</label>
+                                <input type="text" class="layui-input" id="start_time" name="start_time" value="{$start_time}" placeholder="请选择开始时间">
+                                <!--<input class="form-control js-datetimepicker " type="text" id="example-datetimepicker" name="start_time"   placeholder="请选择开始时间" value="{:input('start_time',date('Y-m-d'),'trim')}" data-side-by-side="true" data-locale="zh-cn"  data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group ">
+                                <label class="sr-only" >结束时间</label>
+                                <input type="text" class="layui-input" id="end_time" name="end_time" value="{$end_time}" placeholder="请选择结束时间">
+                                <!--<input class="form-control js-datetimepicker" type="text" id="example-datetimepicker2" name="end_time" placeholder="请选择结束时间" value="{:input('end_time',date('Y-m-d',strtotime('+1 day')),'trim')}" data-side-by-side="true" data-locale="zh-cn"   data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only" >搜索</label>
+                                <button class="btn btn-primary form-control" type="submit">搜索</button>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" >重置</label>
+                                <a href="{:url('Gema/index',['is_agent'=>1])}" class="btn btn-danger form-control" type="reset">重置</a>
+                            </div>
+                            订单总金额 ：¥ <span style="color: green">{$totalOrderPrice|default=0.00}</span>
+                            订单成功金额 ：¥ <span style="color: green">{$totalOrderSuccessPrice|default=0.00}</span>
+                            订单成功率：<span style="color: green">{$orderPercent}%</span>
+
+                        </form>
+
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>类型</th>
+                                    <!--<th>ID</th>-->
+                                    <th>订单号</th>
+                                    <!--<th>用户手机号</th>-->
+                                    <th>订单金额</th>
+<!--                                    <th>实际支付金额</th>-->
+                                    <!--<th>实际支付金额</th>-->
+                                    <!--<th>用户分润</th>-->
+                                    <!--<th>收款员</th>-->
+                                    <!--<th>返款金额</th>-->
+                                    <th>二维码</th>
+
+                                    <!--<th>打款状态</th>-->
+                                    <!--<th>是否转款</th>-->
+                                    <!-- <th>转款凭证</th>-->
+                                    <th>下单时间</th>
+                                    <th>支付时间</th>
+                                    <th>付款人姓名</th>
+                                    <th>真实姓名</th>
+                                    <!--<th>是否返还</th>-->
+                                    <!--<th>订单备注</th>-->
+                                    <th>订单状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="list" id="data"}
+                                <tr>
+                                    <td >{switch name="$data.code_type" }
+                                        {case value="1" }<img src="__PUBLIC__/static/icon/t_1.png" width="40%"  style="margin-left: 20%" >{/case}
+                                        {case value="2"}<img src="__PUBLIC__/static/icon/t_2.png" width="40%" style="margin-left: 20%" >{/case}
+                                        {case value="3"}银行卡{/case}
+										 {case value="4"}微信群红包{/case}
+                                        {default /}
+                                        {/switch}
+                                    </td>
+                                    <!--<td>{php} echo $data['id'];{/php}</td>-->
+                                    <td  >{php} echo $data['order_no'];{/php}</td>
+                                    <!--<td>{php} echo $data['mobile'];{/php}</td>-->
+                                    <!--<td>{php} echo $data['order_price'];{/php}</td>-->
+                                    <td style="font-size: 20px ;color: red">{php} echo $data['order_price'];{/php}</td>
+<!--                                    <td style="font-size: 20px ;color: red">{php} echo $data['order_pay_price'];{/php}</td>-->
+                                    <!--<td>{php} echo $data['bonus_fee'];{/php}</td>-->
+                                    <!--<td>{$data.gema_username}</td>-->
+                                    <!--<td>-->
+                                    <!--if($data['bonus_fee']>0.0){-->
+                                    <!--echo sprintf("%.2f",$data['order_price']-$data['bonus_fee']);-->
+                                    <!--}else{-->
+                                    <!--echo '0.00';-->
+                                    <!--}-->
+                                    <!--</td>-->
+                                    <!--<td>{php} echo  $data['s_type_name'];{/php}</td>-->
+                                    <td >
+									    {if  condition="$data['code_type']==4"}
+										 群名称:<span style="font-size: 20px ;color: red" >{$data.account_name|default='---'} </span><br>
+                                        <a style="font-size: 20px ;color: green" name="查看"  title="点击查看二维码" class="label-pill" href="/{$data.qr_image}">点击查看二维码</a>
+                                        {else/}
+										 收款帐号: <span style="font-size: 20px ;color: red" >{$data.account_number|default='---'} </span><br>
+                                        收款银行: <span style="font-size: 20px ;color: red" >{$data.bank_name|default='---'} </span><br>
+                                        <!--<span style="color: red">访问</span>-->
+                                        {/if}
+
+                                    </td>
+
+
+
+
+                                    <!--{php} $is_upload_credentials_Msg=['否','是'] {/php}-->
+                                    <!--<td>{php} echo $is_upload_credentials_Msg[$data['is_upload_credentials']];{/php}</td>-->
+
+                                    <!--<td> <img onclick="openpic('{php} {/php}','600','650')" src="{php} echo $data.credentials;{php/}" style="width:30%"/></td>-->
+                                    <td>{php} echo date('Y-m-d H:i:s',$data['add_time']);{/php}</td>
+                                    <td>{php} if($data['pay_time']){ echo date('Y-m-d H:i:s',$data['pay_time']);}else{echo '---';}{/php}</td>
+<!--                                    <td>-->
+<!--                                        {if condition="$data['pay_username']"}-->
+<!--                                        {$data['pay_username']}-->
+<!--                                        {else/}-->
+<!--                                        -&#45;&#45;-->
+<!--                                        {/if}-->
+<!--                                    </td>-->
+                                    <td>
+                                        {$data.pay_username|default='----'}
+                                    </td>
+                                    <td>
+                                        {$data.pay_user_name|default='----'}
+                                    </td>
+
+                                    <!--<td>-->
+                                    <!---->
+                                    <!--</td>-->
+                                    <!--<td>{php} echo $data['note'];{/php}</td>-->
+                                    <td>
+                                        {switch name="data.status" }
+                                        {case value="0" }
+                                        <button type="button"   class="btn btn-warning btn-xs ">未支付</button>
+                                        {/case}
+                                        {case value="1"}
+                                        <button type="button"  class="btn btn-success btn-xs ">已支付</button>
+                                        {/case}
+                                        {case value="2"}
+                                        <button type="button"   class="btn btn-danger btn-xs ">已关闭</button>
+                                        {/case}
+                                        {case value="3"}
+                                        <button type="button"   class="btn btn-warning btn-xs ">已退款</button>
+                                        {/case}
+                                        {default /}无
+                                        {/switch}
+                                    </td>
+                                    <td>
+
+                                        {php}  if(true){  {/php}
+					<?php if(($data['status']!=1) && ($data['status']!=2) && ($data['status']!=3) &&$data['add_time']>time()-30*60  ){ ?>
+                                        <!--<button type="button"  href="javascript:issueOrder({$data.id})" class="layui-btn layui-btn-danger layui-btn-sm ">强制补单</button>-->
+                                        <a name="delete" title="budan" class="btn btn-xs btn-danger" href="javascript:issueOrder({$data.id})"  >确认收款</a>
+                                        <a name="delete" title="" class="btn layui-btn-xs btn-info" {if condition="$data.name_abnormal"}disabled{else/}href="javascript:abnormal({$data.id}, 1)"{/if}   >姓名不符</a>
+                                        <a name="delete" title="" class="btn layui-btn-xs btn-info" {if condition="$data.money_abnormal"}disabled{else/}href="javascript:abnormal({$data.id}, 2)"{/if}   >金额不符</a>
+
+<!--                                        <a name="delete" title="budan" class="btn btn-xs btn-danger" href="javascript:refundOrder({$data.id})"  >确认退款</a>-->
+                                        <?php }?>
+                                        <?php if($data['status']==2 && $data['add_time']>time()-30*60 ){ ?>
+                                        <a name="delete" title="budan" class="btn btn-xs btn-danger" href="javascript:issueOrder({$data.id},1,'0','1')"  >强制补单</a>
+                                        <?php } ?>
+
+                                        <!--<?php if($data['status']==0 ){ ?>-->
+                                        <!--<a name="delete" title="budan" class="label label-danger-outline label-pill confirm" href="{:url('Gema/CancleOrder',array('order_no'=>$data['order_no']))}">关闭订单</a>-->
+                                        <!--<?php } ?>-->
+                                        <?php if($data['status']==1 ){ ?>
+                                        <?php  if($data['is_back'] ==0 ){ ?>
+                                        <!-- <button type="button"  href="{:url('Gema/sureBack',array('id'=>$data['id']))}" class="layui-btn layui-btn-danger layui-btn-sm ">打款</button>-->
+                                        <!--<a  title="budan"  class="btn btn-xs btn-success " href="javascript:ajaxUrl('{:url('Gema/sureBack',array('id'=>$data['id']))}')")>打款</a>-->
+                                        <?php  } ?>
+                                        <?php } ?>
+
+                                        {php} }else{  {/php}
+
+                                        <?php if(($data['status']!=1) && ($data['status']!=2) && $data['add_time']>time()-15*60 ){ ?>
+                                        <!--<button type="button"  href="javascript:issueOrder({$data.id})" class="layui-btn layui-btn-danger layui-btn-sm ">强制补单</button>-->
+                                        <a name="delete" title="budan" class="btn btn-xs btn-danger" href="javascript:issueOrder({$data.id},1,{$data.gema_userid})"  >补单</a>
+                                        <?php }?>
+
+                                        <?php if($data['status']==2 && $data['add_time']>time()-30*60 ){ ?>
+                                        <a name="delete" title="budan" class="btn btn-xs btn-danger" href="javascript:issueOrder({$data.id},1,{$data.gema_userid},'1')"  >强制补单</a>
+                                        <?php } ?>
+
+                                        {php} }  {/php}
+
+                                    </td>
+                                </tr>
+                                {/volist}
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {$page}
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__MS__/layui/layui.js"></script>
+<script type="text/javascript">
+
+
+
+    $(function(){
+        $('.search-bar .dropdown-menu a').click(function() {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+
+
+
+
+
+    function issueOrder(id,type=1,user_id=0,coerce='0'){
+
+        var types = {title:"请输入安全码",formType:1};
+
+        issueOrder_token = "{:request()->token()}";
+
+        $.confirm({
+            title: '提示',
+            content: '' +
+                '<form action="" class="formName">' +
+                '<div class="form-group">' +
+                '<label>请输入'+types.title+'</label>' +
+                '<input type="password" placeholder="'+types.title+'" class="name form-control" required />' +
+                '</div>' +
+                '</form>',
+            buttons: {
+                formSubmit: {
+                    text: '提交',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var name = this.$content.find('.name').val();
+                        if(!name){
+                            $.alert('请您输入'+types.title);
+                            return false;
+                        }
+                        ajaxUrl("{:url('issueOrder')}",{id:id,pass:name,user_id:user_id,coerce:coerce,__token__:issueOrder_token})
+                    }
+                },
+                cancel: {
+                    text: '取消'
+                },
+            },
+            onContentReady: function () {
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click');
+                });
+            }
+        });
+
+
+
+
+
+    }
+
+    function abnormal(id, type)
+    {
+        var types = {title:"请输入安全码",formType:1};
+
+        abnormal_token = "{:request()->token()}";
+
+        $.confirm({
+            title: '提示',
+            content: '' +
+                '<form action="" class="formName">' +
+                '<div class="form-group">' +
+                '<label>请输入'+types.title+'</label>' +
+                '<input type="password" placeholder="'+types.title+'" class="name form-control" required />' +
+                '</div>' +
+                '</form>',
+            buttons: {
+                formSubmit: {
+                    text: '提交',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var name = this.$content.find('.name').val();
+                        if(!name){
+                            $.alert('请您输入'+types.title);
+                            return false;
+                        }
+                        ajaxUrl("{:url('abnormal')}",{id:id,pass:name,abnormal:type,__token__:abnormal_token})
+                    }
+                },
+                cancel: {
+                    text: '取消'
+                },
+            },
+            onContentReady: function () {
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click');
+                });
+            }
+        });
+    }
+
+    // function refundOrder(id,type=1,user_id=0,coerce='0'){
+    //
+    //     var types = {title:"请输入安全码",formType:1};
+    //
+    //     issueOrder_token = "{:request()->token()}";
+    //
+    //     $.confirm({
+    //         title: '提示',
+    //         content: '' +
+    //             '<form action="" class="formName">' +
+    //             '<div class="form-group">' +
+    //             '<label>请输入'+types.title+'</label>' +
+    //             '<input type="password" placeholder="'+types.title+'" class="name form-control" required />' +
+    //             '</div>' +
+    //             '</form>',
+    //         buttons: {
+    //             formSubmit: {
+    //                 text: '提交',
+    //                 btnClass: 'btn-blue',
+    //                 action: function () {
+    //                     var name = this.$content.find('.name').val();
+    //                     if(!name){
+    //                         $.alert('请您输入'+types.title);
+    //                         return false;
+    //                     }
+    //                     ajaxUrl("{:url('refundOrder')}",{id:id,pass:name,user_id:user_id,coerce:coerce,__token__:issueOrder_token})
+    //                 }
+    //             },
+    //             cancel: {
+    //                 text: '取消'
+    //             },
+    //         },
+    //         onContentReady: function () {
+    //             var jc = this;
+    //             this.$content.find('form').on('submit', function (e) {
+    //                 e.preventDefault();
+    //                 jc.$$formSubmit.trigger('click');
+    //             });
+    //         }
+    //     });
+    //
+    //
+    //
+    //
+    //
+    // }
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#start_time'
+            ,type: 'datetime'
+        });
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            ,type: 'datetime'
+        });
+
+    })
+
+</script>
+</body>
+</html>

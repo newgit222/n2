@@ -1,0 +1,234 @@
+{extend name="user-layout" /}
+{block name="content"}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 main">
+
+
+
+            <h3>
+                商户提现
+            </h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <td colspan="12">
+                            <form id="form1" action="{:url('index/balance/paid')}" class="form-inline">
+                                <div class="input-group">
+                                    <a href="{:url('index/balance/apply')}" class="btn btn-primary" role="button">申请提现</a>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">申请时间</span>
+                                        <input type="text" id="txtT1" name="d[start]" class="form-control" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss',minDate:'2020-1-31 0:00:00',maxDate:'%y-%M-%d 23:59:59'})" value="{$Request.get.d.start}">
+                                        <span class="input-group-addon">至</span>
+                                        <input type="text" id="txtT2" name="d[end]" class="form-control" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss',minDate:'2020-1-31 0:00:00',maxDate:'%y-%M-%d 23:59:59'})" value="{$Request.get.d.end}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="q" name="status" class="form-control" value="{$Request.get.status}" placeholder="在提现申请中查找">
+                                        <span class="input-group-btn">
+                                    <button id="btnSearch" class="btn btn-success" type="submit" onclick="$('#p').val('');$('#form1').attr('action','');"><i class="glyphicon glyphicon-search"></i></button>
+                                    <button id="btnExport" class="btn btn-primary" type="submit" onclick="$('#form1').attr('action','/exportBalanceCash');"><i class="glyphicon glyphicon-download-alt"></i></button>
+                                    <!--<button class="btn btn-warning" type="submit" onclick="$('#p').val(''); $('#q').val('');"><i class="glyphicon glyphicon-remove"></i></button>-->
+                                    <a  href="{:url('index/balance/paid')}" class="btn btn-warning" ><i class="glyphicon glyphicon-remove"></i></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>单号</th>
+                        <th>提现金额</th>
+                        <th>收款方式</th>
+                        <th>收款账户</th>
+                        <th>收款姓名</th>
+                        <!--<th>备注</th>-->
+                        <th>更新时间</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listBody">
+
+                    {volist name="list" id="vo"}
+                    <tr>
+                        <td>{$vo.cash_no}</td>
+                        <td class="text-danger">￥{$vo.amount}</td>
+                        <td>{$vo.method}</td>
+                        <td>{$vo.account}</td>
+                        <td>{$vo.account_name}</td>
+                        <!--<td>{$vo.remarks}</td>-->
+                        <td>{$vo.update_time}</td>
+                        <td>
+                            {switch $vo.status}
+                            {case 1}<a href="javascript:void(0);" class="btn btn-xs btn-warning">等待</a>{/case}
+                            {case 2}<a href="javascript:void(0);" class="btn btn-xs btn-success">已打款</a>{/case}
+                            {case 3}<a href="javascript:void(0);" class="btn btn-xs btn-warning">等待</a>{/case}
+                            {case 4}<a href="javascript:void(0);" class="btn btn-xs btn-warning">待确认</a>{/case}
+                            {default}<a href="javascript:void(0);" class="btn btn-xs btn-danger">驳回</a>
+                            {/switch}
+                        </td>
+                    </tr>
+                    {/volist}
+
+                    {empty name="list"}
+                    <tr>
+                        <td colspan="12">
+                            未查到数据
+                        </td>
+                    </tr>
+                    {/empty}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="12">
+                            <nav aria-label="Page navigation">
+                                {$list->render()}
+                            </nav>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <script src="__STATIC__/index/baisha/js/WdatePicker.js"></script>
+            <!--<script src="__STATIC__/index/baisha/js/bootstrap-paginator.min.js"></script>-->
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var code, message;
+    PostCancel = function (withdrawNo) {
+        swal({
+            title: "确定要取消提现吗？",
+            buttons: {
+                confirm: true,
+                cancel: true
+            },
+        }).then(function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/Withdraw/PostCancel/",
+                    type: "POST",
+                    data: { WithdrawNo: withdrawNo },
+                    isuccess: function (data) {
+                        code = data.code;
+                        message = data.message;
+                    },
+                    error: function () {
+                        message = "提交失败";
+                    },
+                    icomplete: function () {
+                        if (code == "success") {
+                            swal({ title: "处理成功", text: "正在跳转...", icon: "success", button: false, timer: 2000 }).then(function (isConfirm) {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            swal({ title: "错误", text: message, icon: "error" });
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    InitPage = function () {
+
+        $('#divPage').bootstrapPaginator({
+            currentPage: 1,
+            totalPages: 0,
+            size: "normal",
+            bootstrapMajorVersion: 3,
+            alignment: "right",
+            pageUrl: "javascript:void(0);",
+            numberOfPages: 8,
+            itemTexts: function (type, page, current) {
+                switch (type) {
+                    case "first": return "<<";
+                    case "prev": return "<";
+                    case "next": return ">";
+                    case "last": return ">>";
+                    case "page": return page;
+                }
+            },
+            onPageClicked: function (event, originalEvent, type, page) {
+                $("#p").val(page);
+                $("#s").val(15);
+                $("#form1").submit();
+            }
+        });
+    }();
+
+    $(function () {
+    });
+
+</script>
+
+
+
+<script src="https://cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script type="text/javascript">
+    var controller = "Withdraw";
+    $.ajaxSetup({
+        //async: false,
+        cache: false,
+        timeout: 15000,
+        dataType: "json",
+        //contentType: "application/json; charset=utf-8",
+        crossDomain: true,
+        success: function (data) {
+            if (data.code == "anonymous") {
+                window.location.href = '/';
+            }
+            else if (this.isuccess) {
+                this.isuccess(data);
+            }
+        },
+        error: function (xhr, status, e) {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var domObj = xhr.responseXML;
+                    if (domObj) {
+                        var messageNodes = domObj.getElementsByTagName("message");
+                        if (messageNodes.length > 0) {
+                            var textNode = messageNodes[0].firstChild;
+                            var responseMessage = textNode.nodeValue;
+                            swal({ title: "操作错误", text: responseMessage, icon: "error" });
+                        }
+                        else {
+                            swal({ title: "提交错误:" + xhr.status, text: xhr.responseText, icon: "error" });
+                        }
+                    }
+                    else {
+                        swal({ title: "提交错误:" + xhr.status, text: xhr.responseText, icon: "error" });
+                    }
+                }
+                else {
+                    swal({ title: "提交错误:" + xhr.status, text: "参考信息：无", icon: "error" });
+                }
+            }
+        },
+        beforeSend: function (xhr) {
+            $("#loading").show();
+        },
+        complete: function (xhr, status) {
+            $("#loading").hide();
+            if (this.icomplete) {
+                this.icomplete();
+            }
+        }
+    });
+    $(function () {
+        FastClick.attach(document.body);
+    });
+</script>
+{/block}
+</body>
+</html>

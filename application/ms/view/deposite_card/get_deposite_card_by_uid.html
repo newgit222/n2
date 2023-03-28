@@ -1,0 +1,10 @@
+<div class="form-group col-md-12">
+    <div class="form-controls">
+        <select name="type" class="form-control" onchange="is_show()" id="banks">
+            <option value="0">请选择：</option>
+            {foreach name='list' item='v' key='k'}
+              <option value="{$v.id}">{$v.bank_account_username}-{$v.bank_account_number}</option>
+            {/foreach}
+        </select>
+    </div>
+</div>

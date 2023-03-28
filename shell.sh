@@ -1,0 +1,1 @@
+php think queue:listen --queue AutoOrderNotify

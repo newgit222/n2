@@ -1,0 +1,336 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__MS__/layui/css/layui.css">
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <style>
+                        .list-group{margin-bottom: 0px;}
+                    </style>
+                    <div class="card-body">
+                        <li style="border: none" class="list-group-item">
+                            完成总单数 ： <span style="color: green">{$successCount|default=0} 单</span>
+                            完成总金额 ：¥ <span style="color: green">{$successMoney|default=0.00}</span>
+                        </li>
+
+
+
+                        {volist name="list" id="v"}
+                            <div class="table-responsive">
+                                <ul class="list-group">
+                                    <li class="list-group-item active">订单编号: <?php echo $v['out_trade_no'];?></li>
+                                    <li class="list-group-item">商户UID: <?php echo $v['uid'];?></li>
+                                    <li class="list-group-item">商户余额: <?php echo $v['enable'];?></li>
+<!--                                    <li class="list-group-item">抢单码商: <?php echo $v['username'];?> </li>-->
+                                    <li class="list-group-item">
+                                        金额：<span id="amount_{$v['id']}">{$v.amount}</span>
+                                        <button data-clipboard-target="#amount_{$v['id']}"
+                                                id="copy_amount_{$v['id']}"
+                                                onclick="copy('copy_amount_{$v[\'id\']}')" type="button"
+                                                class="btn btn-success btn-xs ">复制
+                                        </button>
+                                    </li>
+                                    <li class="list-group-item">收款: <br><td>
+                                        姓名：<span id="bank_owner_{$v['id']}">{$v.bank_owner}</span>
+                                        &nbsp
+                                        <button data-clipboard-target="#bank_owner_{$v['id']}"
+                                                id="copy_bank_owner_{$v['id']}"
+                                                onclick="copy('copy_bank_owner_{$v[\'id\']}')" type="button"
+                                                class="btn btn-success btn-xs ">复制
+                                        </button>
+                                        <br/>
+                                        银行：{$v.bank_name}
+                                        <br/>
+                                        卡号：<span id="bank_number_{$v['id']}">{$v.bank_number}</span>
+                                        &nbsp
+                                        <button data-clipboard-target="#bank_number_{$v['id']}"
+                                                id="copy_bank_number_{$v['id']}"
+                                                onclick="copy('copy_bank_number_{$v[\'id\']}')" type="button"
+                                                class="btn btn-success btn-xs ">复制
+                                        </button>
+                                    </td>
+                                    </li>
+<!--                                    <li class="list-group-item">付款: <br><td style="width: 20%">-->
+<!--                                        转账银行卡ID：{$v.bank_id|default='&#45;&#45;'}-->
+<!--                                        <br/>-->
+<!--                                        姓名：{$v.bank_account_username|default='&#45;&#45;'}-->
+<!--                                        <br/>-->
+<!--                                        卡号：{$v.bank_account_number|default='&#45;&#45;'}-->
+<!--                                    </td></li>-->
+                                    <li class="list-group-item">状态 : <td>
+                                        {switch name="v.status" }
+                                        {case value="0" }
+                                        <button type="button" class="btn btn-warning btn-xs ">处理失败</button>
+                                        {/case}
+                                        {case value="1"}
+                                        <button type="button" class="btn btn-success btn-xs ">待处理</button>
+                                        {/case}
+                                        {case value="2"}
+                                        <button type="button" class="btn btn-danger btn-xs ">已完成</button>
+                                        {/case}
+                                        {default /}
+                                        <button type="button" class="btn btn-danger btn-xs ">失败</button>
+                                        {/switch}
+                                    </td></li>
+                                    {if condition="$v['error_reason']"}
+                                        <li class="list-group-item">失败原因:
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-xs "><?php echo $v['error_reason'];?></button>
+                                            </td>
+                                        </li>
+                                    {/if}
+                                    <li class="list-group-item">创建时间: <td><?php echo $v['create_time'];?></td></li>
+                                    <li class="list-group-item">完成时间: <td><?php if($v['finish_time']){ echo date("Y-m-d H:i:s",$v['finish_time']);}else{ echo "无"; }  ?></td>
+                                    </li>
+                                    <li class="list-group-item">操作: <td style="font-size:12px;">
+                                        {if condition="$v['ms_id'] == '0' && $v['status'] == '1'"}
+                                        <a href="javascript:ajaxUrl('{:url('matching',['id'=>$v['id']])}')"
+                                           class="btn btn-xs btn-success">抢单</a>
+                                        {/if}
+                                        {if condition="$v['ms_id'] && $v['status'] == '1'"}
+<!--                                        <a href="<?php echo url('sendDfResult',array('id'=>$v['id'],'status'=>0));?>"-->
+<!--                                           class="btn btn-xs btn-danger">代付失败</a>-->
+                                        <!--                                            <a href="javascript:if(confirm('请确认你已经完成代付')){ajaxUrl('{:url('sendDfResult',['id'=>$v['id'],'status'=>2])}')}" class="btn btn-xs btn-success"  >完成代付</a>-->
+                                        <a href="javascript:void(0)"
+                                           onclick="error_finishDf('{$v['id']}','{$v['uid']}');"
+                                           class="btn btn-xs btn-danger">代付失败</a>
+                                        <a href="javascript:void(0)" onclick="finishDf('{$v['id']}','{$v['uid']}');"
+                                           class="btn btn-xs btn-success">完成代付</a>
+
+                                        {/if}
+
+
+                                    </td></li>
+                                </ul>
+
+                        </div>
+                        {/volist}
+
+                        {$page}
+                    </div>
+                    <div class="card-toolbar clearfix">
+                        <!--                        <style>-->
+                        <!--                            .ds{-->
+                        <!--                                display: inline;width: auto;!important;-->
+                        <!--                            }-->
+                        <!--                        </style>-->
+                        <form class="form-inline" method="get" action="#!" role="form">
+                            <div class="form-group inline">
+                                <label class="sr-only" for="trade_no">平台订单编号</label>
+                                <input  class="form-control ds" type="text" id="trade_no" name="trade_no"
+                                        value="{:input('trade_no','','trim')}" placeholder="请输入平台订单编号">
+                                <!--                                <button class="btn btn-primary form-control ds" type="submit">搜索</button>-->
+                                <!--                                <button class="btn btn-primary form-control ds" type="submit">高级检索</button>-->
+                            </div>
+                            <div class="form-group inline">
+                                <label class="sr-only" for="out_trade_no">商户订单编号</label>
+                                <input  class="form-control ds" type="text" id="out_trade_no" name="out_trade_no"
+                                        value="{:input('out_trade_no','','trim')}" placeholder="请输入商户订单编号">
+                                <!--                                <button class="btn btn-primary form-control ds" type="submit">搜索</button>-->
+                                <!--                                <button class="btn btn-primary form-control ds" type="submit">高级检索</button>-->
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label class="sr-only" for="status">状态</label>
+                                <select name="status" class="form-control" id="status">
+                                    <option value="-1">全部</option>
+                                    <option {if condition="$status eq 0"}selected{/if} value="0">处理失败</option>
+                                    <option {if condition="$status eq 1"}selected{/if} value="1">待处理</option>
+                                    <option {if condition="$status eq 2"}selected{/if} value="2">处理成功</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">开始时间</label>
+                                <input type="text" class="layui-input" id="start_time" name="start_time"
+                                       value="<?php  echo input('start_time',''); ?>"
+                                       placeholder="请选择开始时间">
+                                <!--<input class="form-control js-datetimepicker " type="text" id="example-datetimepicker" name="start_time"   placeholder="请选择开始时间" value="{:input('start_time',date('Y-m-d'),'trim')}" data-side-by-side="true" data-locale="zh-cn"  data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group ">
+                                <label class="sr-only">结束时间</label>
+                                <input type="text" class="layui-input" id="end_time" name="end_time"
+                                       value="<?php  echo input('end_time',''); ?>"
+                                       placeholder="请选择结束时间">
+                                <!--<input class="form-control js-datetimepicker" type="text" id="example-datetimepicker2" name="end_time" placeholder="请选择结束时间" value="{:input('end_time',date('Y-m-d',strtotime('+1 day')),'trim')}" data-side-by-side="true" data-locale="zh-cn"   data-date-format="YYYY-MM-DD HH:mm" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">搜索</label>
+                                <button class="btn btn-primary form-control" type="submit">搜索</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">导出</label>
+                                <button onclick="exportItem(6,layui.$('.searchItem').serialize())"  class="btn btn-primary form-control" type="button">导出</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">重置</label>
+                                <a href="{:url('index')}" class="btn btn-danger form-control" type="reset">重置</a>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__MS__/layui//layui.js"></script>
+<script type="text/javascript" src="__COMMON__/js/clipboard.min.js"></script>
+<script src="__STATIC__/cloudui/js/define.js"></script>
+
+<script type="text/javascript">
+
+    var layer;
+    layui.use('layer', function () {
+        layer =  layer = layui.layer;
+    })
+
+    /**
+     * 复制
+     * @param dom  dom元素
+     */
+    function copy(dom) {
+        var clipboard = new ClipboardJS('#' + dom);
+        clipboard.on('success', function (e) {
+            console.log(e);
+            e.clearSelection(); //选中需要复制的内容
+            layer.msg("复制成功", {time: 500})
+        });
+        clipboard.on('error', function (e) {
+            layer.msg("当前浏览器不支持此功能，请手动复制。", {time: 500})
+        });
+    }
+
+
+    $(function () {
+        $('.search-bar .dropdown-menu a').click(function () {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+
+
+    /**
+     * 完成代付
+     * @param df_order_id
+     * @param width
+     * @param height
+     */
+    function finishDf(df_order_id, uid) {
+
+        var url = "{:url('DepositeCard/getDepositeCardByUid')}";
+        $.post(url, {uid: uid}, function (res) {
+            //选
+            $.alert({
+                title: '选择代付银行卡',
+                content: res,
+                autoClose: '确认|3000',
+                buttons: {
+                    confirm: {
+                        text: '确认',
+                        btnClass: 'btn-primary',
+                        action: function () {
+                            var df_bank_id = $("#banks").val();
+                            if (df_bank_id == 0) {
+                                $.alert("请选择银行卡进行代付");
+                                return false;
+                            }
+                            var sendRes = "{:url('sendDfResult')}?id=" + df_order_id + "&status=2&df_bank_id=" + df_bank_id;
+                            ajaxUrl(sendRes)
+                        }
+                    },
+                    "关闭": function() {
+
+                    }
+                }
+            });
+        }, 'json')
+    }
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#start_time'
+            , type: 'datetime'
+        });
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            , type: 'datetime'
+        });
+
+    })
+
+
+
+    /**
+     * 代付失败
+     * @param df_order_id
+     * @param uid
+     */
+    function error_finishDf(df_order_id, uid) {
+        var reasons = "<div class=\"form-group \">\n" +
+            "                                <label class=\"sr-only\" for=\"error_reason\">状态</label>\n" +
+            "                                <select name=\"error_reason\" class=\"form-control\" id=\"error_reason\">\n" +
+            "                                    <option value=\"\">请选择处理意见</option>\n" +
+            "                                    <option value=\"转账失败:收款账户与户名不\">转账失败:收款账户与户名不符</option>\n" +
+            "                                    <option value=\"收款卡问题,请更换卡再提交\">收款卡问题,请更换卡再提交</option>\n" +
+            "                                    <option value=\"网络错误,请重新提交\">网络错误,请重新提交</option>\n" +
+            "                                    <option value=\"转账失败,收款方账户异常\">转账失败,收款方账户异常</option>\n" +
+            "                                    <option value=\"余额不足\">余额不足</option>\n" +
+            "                                    <option value=\"银行维护\">银行维护</option>\n" +
+            "                                </select>\n" +
+            "                            </div>"
+
+        $.alert({
+            title: '选择代付银行卡',
+            content: reasons,
+            buttons: {
+                confirm: {
+                    text: '确认',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        var error_reason = $("#error_reason").val();
+                        if ($.trim(error_reason) == '') {
+                            $.alert("请至少选择一项转款失败的理由");
+                            return false;
+                        }
+                        var sendRes = "{:url('sendDfResult')}?id=" + df_order_id + "&status=0&error_reason=" + error_reason;
+                        ajaxUrl(sendRes)
+                    }
+                },
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

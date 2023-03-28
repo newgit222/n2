@@ -1,0 +1,84 @@
+{extend name="index-layout" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">基本信息</h4>
+                <p class="card-description">
+                    请认真填写您的个人信息，错误也许会无法收款，谢谢合作！
+                </p>
+                <form class="layui-form forms-sample" action="" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">UID</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="i[uid]" value="{$user.uid}" class="form-control" readonly >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">登录邮箱</label>
+                        <div class="col-sm-9">
+                            <input type="email" value="{$user.account}" class="form-control" readonly >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="UserName" class="col-sm-2 col-form-label">姓名</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="i[username]" value="{$user.username}" class="form-control" id="UserName" placeholder="姓名">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="UserPhone" class="col-sm-2 col-form-label">联系手机</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="i[phone]" required lay-verify="required" value="{$user.phone}" class="form-control" id="UserPhone" placeholder="联系手机">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="UserQQ" class="col-sm-2 col-form-label">联系QQ</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="i[qq]" required lay-verify="required" value="{$user.qq}" class="form-control" id="UserQQ" placeholder="联系QQ">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <button type="button" class="btn btn-success btn-submit-userinfo btn-fw" lay-submit lay-filter="app-user-submitinfo">提交修改</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>layui.use(['form', 'layer','jquery'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(app-user-submitinfo)',
+            function(data) {
+                console.log(data);
+
+                let field = data.field;
+                console.log(field)
+                //提交
+                $.post("{:url('/index/User/info')}",field,function (res) {
+                    if (res.code == 1){setTimeout("location.reload();",1000);}
+                    layer.alert(res.msg);
+                })
+
+
+                return false;
+            });
+
+    });</script>
+{/block}
+{block name="pagejs"}
+

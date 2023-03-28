@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>中通科技|中通聚合支付 - 后台管理 - 编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 30px 0 0;">
+
+    <div id="users"  class="layui-form-item">
+        <label class="layui-form-label">商户：</label>
+        <div class="layui-input-block">
+            <select  name="uid">
+                <option value="">请选择</option>
+                {foreach name='users' item="v" key=>"key"}
+
+                <option value="{$v.uid}"   {$appoint.uid == $v.uid?'selected':''}   >{$v.username}</option>
+                {/foreach}
+
+            </select>
+        </div>
+    </div>
+
+
+    <div id="pay_code"  class="layui-form-item">
+        <label class="layui-form-label">支付产品：</label>
+        <div class="layui-input-block">
+            <select  name="pay_code_id" id="pay_codes" lay-filter="pay_codes" >
+                <option value="">请选择</option>
+                {foreach name='pay_code' item="v" key=>"key"}
+                <option value="{$v.id}"  {$appoint.pay_code_id == $v.id?'selected':''}  >{$v.name}/{$v.code}</option>
+                {/foreach}
+
+            </select>
+        </div>
+    </div>
+
+    <div id="channel"  class="layui-form-item">
+        <label class="layui-form-label">支付渠道：</label>
+        <div class="layui-input-block">
+            <select  name="cnl_id" id="channels" >
+                <!--<option value="">请选择</option>-->
+                <!--{foreach name='pay_code' item="v" key=>"key"}-->
+                <!--<option value="{$v.id}">{$v.name}/{$v.code}</option>-->
+                <!--{/foreach}-->
+
+            </select>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="layui-form-item layui-hide">
+        <input type="hidden" name="appoint_id" value="{$appoint.appoint_id}" >
+        <input type="button" lay-submit lay-filter="app-user-appoint-submit" id="app-user-appoint-submit" value="确认">
+    </div>
+</div>
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'upload'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,upload = layui.upload ;
+
+
+        form.on('select(pay_codes)', function(data){
+
+            getChannelList(data.value);
+        });
+
+        getChannelList("{$appoint.pay_code_id}");
+
+
+        function getChannelList(pay_code_id) {
+            $.ajax({
+                url:'get_channel_list?id='+pay_code_id,
+                dataType:'json',
+                async: true,
+                success:function(data){
+                    var cnl_id = "{$appoint.cnl_id}"
+                    $("#channels").html("<option value=''>请选择</option>");
+                    if(data.count > 0 ) {
+                        $.each(data.data, function (index, item) {
+                            // $('#channels').append(new Option(item.name,item.id));//往下拉菜单里添加元素
+                            if(cnl_id ==item.id ) {
+                                $('#channels').append(new Option(item.name, item.id,true,true));//往下拉菜单里添加元素
+                            }else{
+                                $('#channels').append(new Option(item.name, item.id));//往下拉菜单里添加元素
+                            }
+                            form.render('select'); //这个很重要
+
+                        })
+                    }
+                    form.render('select'); //这个很重要
+                }
+            });
+        }
+
+    })
+
+
+
+
+</script>
+</body>
+</html>

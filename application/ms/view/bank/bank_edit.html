@@ -1,0 +1,105 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        {notempty name="info" }
+                        <form  id="inputForm" action="{:url('bank_edit')}" method="post" class="row">
+                            {else /}
+                            <form id="inputForm" action="{:url('bank_add')}" method="post" class="row">
+                                {/notempty}
+
+
+                                <div class="form-group hidden col-md-12 ">
+                                    <label for="id">ID：</label>
+                                        <input type="hidden" class="form-control " id="id" name="id" value="{:isset($info.transfer_bank_id)?$info.transfer_bank_id:''}">
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label >银行类型</label>
+                                    <div class="col-xs-12">
+                                        {php}    foreach($bank_type as $v){   {/php}
+                                        <label class="radio-inline" for="{$v.id}">
+                                            <input type="radio"  id="{$v.id}" name="bank_type" value="{$v.id}" placeholder="{$v.name}"
+                                                   {:isset($info.bank_type) && $info.bank_type==$v.id ? 'checked="checked"' : ''} />
+                                            {$v.name}
+                                        </label>
+                                        {php}  } {/php}
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-12 ">
+                                    <label for="mobile">手机号：</label>
+                                        <input type="text" class="form-control " id="mobile" name="mobile" value="{:isset($info.mobile)?$info.mobile:''}" placeholder="手机号" >
+                                </div>
+                                <div class="form-group col-md-12 ">
+                                    <label for="realname">真实姓名：</label>
+                                        <input type="text" class="form-control " id="realname" name="realname" value="{:isset($info.realname)?$info.realname:''}" placeholder="真实姓名" >
+                                </div>
+                                <div class="form-group col-md-12 ">
+                                    <label for="password">网银登录密码：</label>
+                                        <input type="text" class="form-control " id="password" name="password" value="{:isset($info.password)?$info.password:''}" placeholder="网银登录密码" >
+                                </div>
+                                <div class="form-group col-md-12 ">
+                                    <label for="pay_pwd">支付密码：</label>
+                                        <input type="text" class="form-control" id="pay_pwd" name="pay_pwd" value="{:isset($info.pay_pwd)?$info.pay_pwd:''}" placeholder="支付密码" >
+                                </div>
+                                <div class="form-group col-md-12 ">
+                                    <label for="account_number">银行卡号：</label>
+                                        <input type="text" class="form-control" id="account_number" name="account_number" value="{:isset($info.account_number)?$info.account_number:''}" placeholder="银行卡号" >
+                                </div>
+                                <!--<div class="form-group col-md-12 ">-->
+                                    <!--<label for="username">设置用户名：</label>-->
+                                        <!--<input type="text" class="form-control " id="username" name="username" value="{:isset($info.username)?$info.username:''}" placeholder="设备用户名" >-->
+                                <!--</div>-->
+                                <!--<div class="form-group col-md-12 ">-->
+                                    <!--<label for="user_password">设备密码：</label>-->
+                                        <!--<input type="text" class="form-control " id="user_password" name="user_password" value="" placeholder="设备密码" >-->
+                                <!--</div>-->
+
+                                <div class="form-group col-md-12">
+                                    <label >是否激活</label>
+                                    <div class="col-xs-12">
+                                        <label class="radio-inline" for="status_0">
+                                            <input type="radio"  id="status_0" name="status" value="1" placeholder="显示状态"
+                                                   {:isset($info.status) && $info.status==1 ? 'checked="checked"' : ''} />
+                                            激活中
+                                        </label>
+                                        <label class="radio-inline" for="status_1">
+                                            <input type="radio"  id="status_1" name="status" value="0" placeholder="隐藏状态"
+                                                   {:isset($info.status) && $info.status==0 ? 'checked="checked"' : ''} />
+                                            未激活
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <button type="submit" class="btn btn-primary ajax-post" target-form="add-form">确 定</button>
+                                    <button type="button" class="btn btn-default" onclick="javascript:history.back(-1);return false;">返 回</button>
+                                </div>
+                            </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+</body>
+</html>

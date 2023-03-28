@@ -1,0 +1,89 @@
+<script type="text/javascript" src="__MS__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__MS__/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="__MS__/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__MS__/js/perfect-scrollbar.min.js"></script>
+<script src="__MS__/js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="__MS__/js/lightyear.js"></script>
+<script src="__MS__/js/jconfirm/jquery-confirm.min.js"></script>
+<!--时间选择插件-->
+<script src="__MS__/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script src="__MS__/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="__MS__/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+<!--日期选择插件-->
+<script src="__MS__/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="__MS__/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="__MS__/js/main.min.js"></script>
+<script type="text/javascript" src="__COMMON__/js/jquery.form.js"></script>
+<script type="text/javascript" src="__MS__/js/ajaxsubmit.js"></script>
+<script type="text/javascript" src="__MS__/js/orderremind.js"></script>
+<script>
+    var homeMenu = $.cookie('homeMenu');
+    console.log(homeMenu);
+    //判断保存的是哪个菜单
+    var obj = $("#" + homeMenu)
+    if (obj) {
+        obj.attr('style', 'color:#33cabb;')
+        obj.parent().attr('style', 'display: block;');
+        obj.parent().parent().attr('class', 'nav-item nav-item-has-subnav open')
+    }
+
+    function skipMune(url, id) {
+        console.log(id)
+        $.cookie('homeMenu', id, {
+            path: '/',
+        });
+        location = url;
+    }
+
+
+    //新得订单提醒
+
+    //新订单提醒
+    setInterval(function () {
+        var url = "{:url('DaifuOrders/lastOrder')}";
+        $.ajax({
+            type: 'post',
+            url: url,
+            dataType: 'json',
+            async: false,
+            success: function (order_id) {
+                var loacal_order_id = localStorage.getItem('order_id');
+                if (order_id != loacal_order_id) {
+                    playVoiceAndOpenLayer($);
+                    lightyear.notify('有新的订单,请注意查收', 'info', '5000', 'glyphicon glyphicon-warning-sign', 'bottom', 'right');
+                    localStorage.setItem('order_id', order_id);
+                }
+            }
+        });
+    }, 5000);
+
+    /*
+        * 播报新订单以及以及弹出订单号
+         *
+         */
+    function playVoiceAndOpenLayer($, order_sn) {
+        var borswer = window.navigator.userAgent.toLowerCase();
+        if (borswer.indexOf("ie") >= 0) {
+            //IE内核浏览器
+            var strEmbed = '<embed name="embedPlay" src="__COMMON__/order.mp3" autostart="true" hidden="true" loop="false"></embed>';
+            if ($("body").find("embed").length <= 0) {
+                $("body").append(strEmbed);
+            }
+            var embed = document.embedPlay;
+            //浏览器不支持 audio，则使用 embed 播放
+            embed.volume = 100;
+        } else {
+            //非IE内核浏览器
+            var strAudio = "<audio id='audioPlay' src='__COMMON__/order.mp3' hidden='true'>";
+            if ($("body").find("audio").length <= 0) {
+                $("body").append(strAudio);
+            }
+            var audio = document.getElementById("audioPlay");
+            //浏览器支持 audio
+            audio.play(); //没有就播放
+
+        }
+    }
+
+
+</script>

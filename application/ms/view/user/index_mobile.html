@@ -1,0 +1,187 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+<link rel="stylesheet" href="__MS__/layui/css/layui.css">
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <style>
+                        .list-group{margin-bottom: 0px;}
+                    </style>
+                    <div class="card-body">
+                        {volist name="users" id="v"}
+                            <div class="table-responsive">
+                                <ul class="list-group">
+                                    <li class="list-group-item">商户UID: <?php echo $v['uid'];?></li>
+                                    <li class="list-group-item">商户名称: <?php echo $v['username'];?></li>
+                                    <li class="list-group-item">商户余额: <?php echo $v['enable']?$v['enable']:'0.00';?></li>
+                                    </li>
+                                    <li class="list-group-item">操作:
+                                        <td style="font-size:12px;">
+                                            <a href="{:url('changeBalance',['uid'=>$v['uid']])}"
+                                               class="btn btn-xs btn-success">修改余额</a>
+                                            <a href="{:url('balanceChangeLog',['uid'=>$v['uid']])}"
+                                               class="btn btn-xs btn-success">查看流水</a>
+                                            <a href="{:url('DepositeCard/getDepositeCardList',['uid'=>$v['uid']])}"
+                                               class="btn btn-xs btn-success">代付账户</a>
+                                        </td>
+                                    </li>
+                                </ul>
+
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript" src="__MS__/layui//layui.js"></script>
+<script type="text/javascript" src="__COMMON__/js/clipboard.min.js"></script>
+
+<script type="text/javascript">
+
+
+    /**
+     * 复制
+     * @param dom  dom元素
+     */
+    function copy(dom) {
+        var clipboard = new ClipboardJS('#' + dom);
+        clipboard.on('success', function (e) {
+            console.log(e);
+            e.clearSelection(); //选中需要复制的内容
+            alert('复制成功')
+        });
+        clipboard.on('error', function (e) {
+            alert("当前浏览器不支持此功能，请手动复制。")
+        });
+    }
+
+
+    $(function () {
+        $('.search-bar .dropdown-menu a').click(function () {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+
+
+    /**
+     * 完成代付
+     * @param df_order_id
+     * @param width
+     * @param height
+     */
+    function finishDf(df_order_id, uid) {
+
+        var url = "{:url('DepositeCard/getDepositeCardByUid')}";
+        $.post(url, {uid: uid}, function (res) {
+            //选
+            $.alert({
+                title: '选择代付银行卡',
+                content: res,
+                autoClose: '确认|3000',
+                buttons: {
+                    confirm: {
+                        text: '确认',
+                        btnClass: 'btn-primary',
+                        action: function () {
+                            var df_bank_id = $("#banks").val();
+                            if (df_bank_id == 0) {
+                                $.alert("请选择银行卡进行代付");
+                                return false;
+                            }
+                            var sendRes = "{:url('sendDfResult')}?id=" + df_order_id + "&status=2&df_bank_id=" + df_bank_id;
+                            ajaxUrl(sendRes)
+                        }
+                    },
+                    "关闭": function() {
+
+                    }
+                }
+            });
+        }, 'json')
+    }
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#start_time'
+            , type: 'datetime'
+        });
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#end_time'
+            , type: 'datetime'
+        });
+
+    })
+
+
+
+    /**
+     * 代付失败
+     * @param df_order_id
+     * @param uid
+     */
+    function error_finishDf(df_order_id, uid) {
+        var reasons = "<div class=\"form-group \">\n" +
+            "                                <label class=\"sr-only\" for=\"error_reason\">状态</label>\n" +
+            "                                <select name=\"error_reason\" class=\"form-control\" id=\"error_reason\">\n" +
+            "                                    <option value=\"\">请选择处理意见</option>\n" +
+            "                                    <option value=\"转账失败:收款账户与户名不\">转账失败:收款账户与户名不符</option>\n" +
+            "                                    <option value=\"收款卡问题,请更换卡再提交\">收款卡问题,请更换卡再提交</option>\n" +
+            "                                    <option value=\"网络错误,请重新提交\">网络错误,请重新提交</option>\n" +
+            "                                    <option value=\"转账失败,收款方账户异常\">转账失败,收款方账户异常</option>\n" +
+            "                                    <option value=\"余额不足\">余额不足</option>\n" +
+            "                                    <option value=\"银行维护\">银行维护</option>\n" +
+            "                                </select>\n" +
+            "                            </div>"
+
+        $.alert({
+            title: '选择代付银行卡',
+            content: reasons,
+            buttons: {
+                confirm: {
+                    text: '确认',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        var error_reason = $("#error_reason").val();
+                        if ($.trim(error_reason) == '') {
+                            $.alert("请至少选择一项转款失败的理由");
+                            return false;
+                        }
+                        var sendRes = "{:url('sendDfResult')}?id=" + df_order_id + "&status=0&error_reason=" + error_reason;
+                        ajaxUrl(sendRes)
+                    }
+                },
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

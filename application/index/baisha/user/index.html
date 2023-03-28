@@ -1,0 +1,220 @@
+
+
+{extend name="user-layout" /}
+{block name="content"}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 main">
+            <h3>
+                首页 - 交易统计 &nbsp;<a href="{:url('index/order/index')}" class="btn btn-xs btn-success">订单查询</a>&nbsp;&nbsp;<a href="{:url('index/balance/paid')}" class="btn btn-xs btn-primary">提现</a>
+            </h3>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <!--<tr>-->
+                                <!--<td colspan="10">-->
+                                    <!--<form id="form1" class="form-inline">-->
+                                        <!--<input type="hidden" id="p" name="p">-->
+                                        <!--<input type="hidden" id="s" name="s">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<div class="input-group">-->
+                                                <!--<span class="input-group-addon">结算时间</span>-->
+                                                <!--<input type="text" id="txtT1" name="t1" class="form-control" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss',minDate:'2020-1-31 0:00:00',maxDate:'%y-%M-%d 23:59:59'})" value="2020-3-31 0:00:00">-->
+                                                <!--<span class="input-group-addon">至</span>-->
+                                                <!--<input type="text" id="txtT2" name="t2" class="form-control" style="width:150px;" onclick="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss',minDate:'2020-1-31 0:00:00',maxDate:'%y-%M-%d 23:59:59'})" value="2020-3-31 23:59:59">-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="form-group">-->
+                                            <!--<div class="input-group">-->
+                                                <!--<button id="btnSearch" class="btn btn-success" type="submit" onclick="$('#p').val('');"><i class="glyphicon glyphicon-search"></i></button>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+
+                                    <!--</form>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                            <tr>
+                                <!--<th>日期</th>-->
+                                <th>当日订单</th>
+                                <th>当日总流水</th>
+                                <th>当日成交</th>
+                                <th>当日收入</th>
+                                <th>总订单数</th>
+                                <th>总交易量</th>
+                                <th>账户总资产</th>
+                                <th>可用余额</th>
+                                <th>冻结余额</th>
+                            </tr>
+                            </thead>
+                            <tbody id="listBody">
+                            <tr>
+                                <!--<td class="text-center">2020-03-31</td>-->
+                                <td class="text-center">{$month.order.total}</td>
+                                <td class="text-center bg-success">￥{$month.fees.total}</td>
+                                <td class="text-center bg-info">￥{$month.fees.paid}</td>
+                                <td class="text-center bg-warning">￥{$month.order.user_all_in}</td>
+                                <td class="text-center bg-success">{$stat.order.total}</td>
+                                <td class="text-center bg-info">￥{:number_format($stat.fees.total,2)}</td>
+                                <td class="text-center bg-warning">￥{:number_format($wallet.enable + $wallet.disable,2)}</td>
+                                <td class="text-center">￥{:number_format($wallet.enable,2)}</td>
+                                <td class="text-center">￥{:number_format($wallet.disable,2)}</td>
+                            </tr>
+                            </tbody>
+                            <!--<tfoot>-->
+                            <!--<tr>-->
+                                <!--<td colspan="10">-->
+                                    <!--<nav aria-label="Page navigation">-->
+                                        <!--<ul id="divPage" class="pagination"></ul>-->
+                                        <!--&lt;!&ndash;<ul class="pagination"><li><a href="javascript:void(0);">共 1 页/1 条记录</a></li></ul>&ndash;&gt;-->
+                                    <!--</nav>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                            <!--</tfoot>-->
+                        </table>
+                    </div>
+                </div>
+                <!--<div class="col-xs-12 col-sm-4">-->
+                    <!--<div class="panel panel-default">-->
+                        <!--<div class="panel-heading">谷歌密钥验证</div>-->
+                        <!--<div class="panel-body">-->
+                            <!--<p><a href="/home/bindkey">点此绑定/解绑谷歌密钥</a></p>-->
+                            <!--<p>安卓手机可使用谷歌密钥进行绑定</p>-->
+                            <!--<p>-->
+                                <!--<a href="http://otp.aliyun.com/m/index.html" target="_blank">-->
+                                    <!--<img src="/Content/images/android_btn.png" />-->
+                                <!--</a>&nbsp;-->
+                                <!--<a href="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8" target="_blank">-->
+                                    <!--<img src="/Content/images/apple_btn.png" />-->
+                                <!--</a>-->
+                            <!--</p>-->
+                            <!--<p><img src="" /></p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="col-xs-12 col-sm-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">商户资料</div>
+                        <div class="panel-body">
+                            <p>UID：{$api.uid}</p>
+                            <p>密钥：<a id="btnShowKey" href="javascript:ShowKey();">已隐藏，点击显示</a><span id="key"></span></p>
+                            <!--<p>更换密钥：<a id="btnShowKey" href="javascript:ChangeKey();">我要更换密钥</a></p>-->
+                            <p>网关地址：{:request()->domain()}/api/pay/unifiedorder</p>
+                            <p>回调ip：{$notify_ip.value}</p>
+                            <!--<p>对接文档：<a target="_blank" href="#">查看在线文档</a></p>-->
+                            <a href="{:url('index/Index/download')}"  class="btn btn-primary btn-submit-apiinfo btn-fw"  >DEMO下载</a>
+                            <a href="{:url('index/Index/download',['type'=>1])}"  class="btn btn-primary btn-submit-apiinfo btn-fw"  >文档下载</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="/Content/my97/WdatePicker.js"></script>
+            <script src="/Content/js/bootstrap-paginator.min.js"></script>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    ShowKey = function () {
+        //$("#btnShowKey").hide();
+        //$("#key").text('87382C7511645390BD18799AC494D93F');
+        swal("{$api.key}");
+    };
+
+    InitPage = function () {
+        $('#divPage').bootstrapPaginator({
+            currentPage: 1,
+            totalPages: 1,
+            size: "normal",
+            bootstrapMajorVersion: 3,
+            alignment: "right",
+            pageUrl: "javascript:void(0);",
+            numberOfPages: 8,
+            itemTexts: function (type, page, current) {
+                switch (type) {
+                    case "first": return "<<";
+                    case "prev": return "<";
+                    case "next": return ">";
+                    case "last": return ">>";
+                    case "page": return page;
+                }
+            },
+            onPageClicked: function (event, originalEvent, type, page) {
+                $("#p").val(page);
+                $("#s").val(15);
+                $("#form1").submit();
+            }
+        });
+    }();
+
+    $(function () {
+    });
+
+</script>
+
+
+
+<script src="https://cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script type="text/javascript">
+    var controller = "Home";
+    $.ajaxSetup({
+        //async: false,
+        cache: false,
+        timeout: 15000,
+        dataType: "json",
+        //contentType: "application/json; charset=utf-8",
+        crossDomain: true,
+        success: function (data) {
+            if (data.code == "anonymous") {
+                window.location.href = '/';
+            }
+            else if (this.isuccess) {
+                this.isuccess(data);
+            }
+        },
+        error: function (xhr, status, e) {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var domObj = xhr.responseXML;
+                    if (domObj) {
+                        var messageNodes = domObj.getElementsByTagName("message");
+                        if (messageNodes.length > 0) {
+                            var textNode = messageNodes[0].firstChild;
+                            var responseMessage = textNode.nodeValue;
+                            swal({ title: "操作错误", text: responseMessage, icon: "error" });
+                        }
+                        else {
+                            swal({ title: "提交错误:" + xhr.status, text: xhr.responseText, icon: "error" });
+                        }
+                    }
+                    else {
+                        swal({ title: "提交错误:" + xhr.status, text: xhr.responseText, icon: "error" });
+                    }
+                }
+                else {
+                    swal({ title: "提交错误:" + xhr.status, text: "参考信息：无", icon: "error" });
+                }
+            }
+        },
+        beforeSend: function (xhr) {
+            $("#loading").show();
+        },
+        complete: function (xhr, status) {
+            $("#loading").hide();
+            if (this.icomplete) {
+                this.icomplete();
+            }
+        }
+    });
+    $(function () {
+        FastClick.attach(document.body);
+    });
+</script>
+{/block}
+
+</body>
+</html>

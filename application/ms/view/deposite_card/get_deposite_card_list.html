@@ -1,0 +1,135 @@
+{include file="common/common_header" /}
+{include file="common/common_menu" /}
+
+<!--页面主要内容-->
+<main class="lyear-layout-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-toolbar clearfix">
+                        <form class="form-inline pull-right " method="get" action="#!" role="form">
+                            <div class="form-group">
+                                <label class="sr-only" for="mobile">银行卡号</label>
+                                <input class="form-control" type="text" id="bank_account_number" name="mobile"
+                                       value="{:input('bank_account_number','','trim')}" placeholder="请输入银行卡号">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">搜索</label>
+                                <button class="btn btn-primary form-control" type="submit">搜索</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="sr-only">重置</label>
+                                <a href="{:url('bank_index')}" class="btn btn-danger form-control" type="reset">重置</a>
+                            </div>
+                        </form>
+                        <div class="toolbar-btn-action">
+                            <a class="btn btn-primary m-r-5" href="{:url('addDepositeCard')}"><i
+                                    class="mdi mdi-plus"></i> 新增</a>
+
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>银行卡</th>
+                                    <th>银行账户名</th>
+                                    <th>银行卡号</th>
+                                    <th>支行名称</th>
+                                    <th>指定商户</th>
+                                    <th>余额</th>
+                                    <th>最后更新时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="list" id="v"}
+                                <tr>
+                                    <td><?php echo $v['id'];?></td>
+                                    <td><?php echo $v['name'];?></td>
+                                    <td><?php echo $v['bank_account_username'];?></td>
+                                    <td><?php echo $v['bank_account_number'];?></td>
+                                    <td><?php echo $v['bank_account_address'];?></td>
+                                    <td><?php echo $v['username'];?></td>
+                                    <td><?php echo $v['balance']?$v['balance']:0.000;?></td>
+                                    <td><?php echo $v['update_time'];?></td>
+                                    <td>
+                                        {switch name="v.status" }
+                                        {case value="1"}
+                                        <button type="button"  class="btn btn-success btn-xs ">可用</button>
+                                        {/case}
+                                        {default /}
+                                        <button type="button"   class="btn btn-danger btn-xs ">禁止</button>
+                                        {/switch}
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-xs btn-success" href="<?php echo url('editDepositeCard',array('id'=>$v['id']));?>">编辑</a>
+                                        <a class="btn btn-xs btn-success" href="<?php echo url('changeLog',array('id'=>$v['id']));?>">流水</a>
+                                        <a class="btn btn-xs btn-danger" href=javascript:ajaxUrl("<?php echo url('bank_del',array('id'=>$v['id']));?>") >删除</a>
+                                    </td>
+                                </tr>
+                                {/volist}
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {$page}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!--End 页面主要内容-->
+</div>
+</div>
+
+{include file="common/common_js" /}
+<script type="text/javascript">
+    $(function () {
+        $('.search-bar .dropdown-menu a').click(function () {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+
+    function openpic(pic, width = 400, height = 400) {
+
+        $.alert({
+            title: '查看二维码',
+            content: '<img style="max-width: ' + width + 'px;max-height: ' + height + 'px;" src="' + pic + '">',
+            buttons: {
+                confirm: {
+                    text: '确认',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        // $.alert('你点击了确认!');
+                    }
+                },
+
+            }
+        });
+
+
+    }
+
+
+</script>
+</body>
+</html>

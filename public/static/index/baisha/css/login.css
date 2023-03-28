@@ -1,0 +1,39 @@
+body {
+    background: url("../images/bg03.jpg");
+}
+
+@keyframes myfirst {
+    0% {
+        background: url("../images/bg01.jpg");
+    }
+
+    50% {
+        background: url("../images/bg03.jpg");
+    }
+
+    100% {
+        background: url("../images/bg05.jpg");
+    }
+}
+
+.form {
+    background: rgba(255,255,255,0.6);
+    width: 400px;
+    margin: 120px auto;
+}
+/*阴影*/
+.gl {
+    display: inline-block;
+    top: 27px;
+    left: 6px;
+    position: relative;
+    color: #ccc;
+}
+
+input[type="text"], input[type="password"] {
+    padding-left: 26px;
+}
+
+.checkbox {
+    padding-left: 21px;
+}

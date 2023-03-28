@@ -1,0 +1,18 @@
+{
+    "name": "jiguang/jsms",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "JPush",
+            "email": "support@jpush.cn"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-curl": "*"
+    },
+    "autoload" : {
+        "psr-4": {"JiGuang\\": "src/"}
+    }
+}

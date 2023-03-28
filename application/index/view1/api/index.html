@@ -1,0 +1,98 @@
+{extend name="index-layout" /}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">API信息</h4>
+                    <form class="layui-form forms-sample" action="" method="post">
+                        <input name="u[id]" value="{$api.id}" id="id"  hidden disabled readonly>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">UID</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="u[uid]" value="{$api.uid}" class="form-control" placeholder="UID" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">KEY</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{$api.key}" class="form-control" placeholder="保存或修改数据公钥会自动生成" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">网关地址</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="u[domain]" value="{:request()->domain()}/api/pay/unifiedorder" class="form-control" placeholder="请求域名">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">回调IP</label>
+                            <div class="col-sm-9">
+                                <input type="text"  value="{$notify_ip.value}" class="form-control" placeholder="回调IP" readonly>
+                            </div>
+                        </div>
+                        <!--   <div class="form-group row">
+                               <label class="col-sm-2 col-form-label">数据公钥</label>
+                               <div class="col-sm-9">
+                                   <textarea type="text" name="u[secretkey]" required lay-verify="required" class="form-control" rows="5">{$api.secretkey}</textarea>
+                                   <p class="card-description">商户数据公钥可以自己生成,推荐使用支付宝<a href="https://docs.open.alipay.com/291/106097" target="_blank">RSA签名验签工具</a>（注：非JAVA适用 2048 pkcs1s）</p>
+                               </div>
+                           </div>-->
+                        <!--<div class="form-group row">-->
+                        <!--<label class="col-sm-2 col-form-label">IP白名单</label>-->
+                        <!--<div class="col-sm-9">-->
+                        <!--<textarea type="text" name="u[auth_ips]"  class="form-control" rows="5">{$api.auth_ips}</textarea>-->
+                        <!--<p class="card-description">多个IP请用,号隔开</p>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label"></label>
+                            <div class="col-sm-9">
+                                <button type="button" class="btn btn-success btn-submit-apiinfo btn-fw" lay-submit lay-filter="app-user-submitapi">提交修改</button>
+                                <button type="button" class="btn btn-warning btn-submit-apiinfo btn-fw" lay-submit lay-filter="resetKey" >重置密钥</button>
+                                <a href="{:url('index/Index/download')}"  class="btn btn-primary btn-submit-apiinfo btn-fw"  >DEMO下载</a>
+                                <a href="{:url('index/Index/download',['type'=>1])}"  class="btn btn-primary btn-submit-apiinfo btn-fw"  >文档下载</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>layui.use(['form', 'layer','jquery'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听搜索
+        form.on('submit(app-user-submitapi)', function(data){
+            let field = data.field;
+            console.log(field)
+            //提交
+            $.post("{:url('index/Api/index')}",field,function (res) {
+                if (res.code == 1){setTimeout("location.reload();",1000);}
+                layer.alert(res.msg);
+            })
+        });
+
+        form.on('submit(resetKey)', function(data){
+            layer.prompt({title: '请输入登录密码', formType: 1}, function(pass, index){
+                layer.close(index);
+
+                $.post("{:url('index/Api/resetKey')}",{pass:pass,id:$("#id").val()},function (res) {
+                    if (res.code == 1){setTimeout("location.reload();",1000);}
+                    layer.alert(res.msg);
+                })
+            });
+        });
+
+
+
+    });</script>
+{/block}
+{block name="pagejs"}
+

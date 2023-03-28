@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>中通科技|中通聚合支付 - 后台管理 - 商户列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__ADMIN__/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商户UID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="uid" placeholder="请输入商户UID"  value="{$uid}" autocomplete="off" class="layui-input searchItem">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="app-user-appoint-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-card-body">
+            <div class="app-user-manage" style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-useradmin layui-btn-normal layui-btn-sm" data-type="add">添加</button>
+            </div>
+            <table id="app-user-appoint" lay-filter="app-user-appoint"></table>
+
+            <script type="text/html" id="table-useradmin-webuser">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="appoint_edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="appoint_del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script src="__ADMIN__/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '__ADMIN__/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'user','form','laydate', 'table'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,laydate = layui.laydate
+            ,table = layui.table;
+
+        //同时绑定多个日期
+        lay('.app-laydate-item').each(function(){
+            laydate.render({
+                elem: this
+                ,value: new Date()
+                ,trigger: 'click'
+                ,type: 'datetime'
+
+            });
+        });
+
+        //监听搜索
+        form.on('submit(app-user-appoint-search)', function(data){
+            var field = data.field;
+
+            //执行重载
+            table.reload('app-user-appoint', {
+                where: field
+            });
+        });
+
+        //事件
+        var active = {
+            add: function(){
+                layer.open({
+                    type: 2
+                    ,title: '添加'
+                    ,content: 'appoint_add'
+                    ,maxmin: true
+                    ,area: ['80%','60%']
+                    ,btn: ['确定', '取消']
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'app-user-appoint-submit'
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(obj){
+                            var field = obj.field; //获取提交的字段
+
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            $.ajax({
+                                url:'appoint_add',
+                                method:'POST',
+                                data:field,
+                                success:function (res) {
+                                    if (res.code == 1){
+                                        table.reload('app-user-appoint'); //数据刷新
+                                        layer.close(index); //关闭弹层
+                                    }
+                                    layer.msg(res.msg, {icon: res.code == 1 ? 1: 2,time: 1500});
+
+                                }
+                            });
+                        });
+
+                        submit.trigger('click');
+                    }
+                });
+            }
+        };
+
+        $('.layui-btn.layuiadmin-btn-useradmin').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+
+
+
+    });
+</script>
+</body>
+</html>
