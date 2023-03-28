@@ -58,10 +58,10 @@ class CheckFrequent extends ApiCheck
     public function doCheck(Request $request)
     {
         $key = 'ClientIp:' . $request->ip();
-        $cache = Cache::store('redis');
-        $value = $cache->get($key);
+//        $cache = Cache::store('redis');
+        $value = Cache::get($key);
         if (!$value) {
-            $cache->set($key, 0, $this->timeScope);
+            Cache::set($key, 0, $this->timeScope);
         }
         if ($value >= $this->times) {
         /*    Log::error($key . '[ Trigger Restriction And Flow Control.]');
@@ -70,6 +70,6 @@ class CheckFrequent extends ApiCheck
                 'errorCode' => 100003
             ]);*/
         }
-        $cache->inc($key);
+        Cache::inc($key);
     }
 }
