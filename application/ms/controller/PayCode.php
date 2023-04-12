@@ -26,12 +26,13 @@ class PayCode extends Base
     {
 
 
-
+        $code_type = $request->param('code_type','30');
         $account_name = $request->param('account_name', '', 'trim');
 	if(strlen( $account_name<10)){
 	    $account_name && $map['a.account_name'] = ['like', '%' . $account_name . '%'];
         }
         $map = [];
+        $map['a.code_type'] = $code_type;
         $map['a.ms_id'] = $this->agent_id;
         $map['a.is_delete'] = 0;
 
@@ -60,6 +61,7 @@ class PayCode extends Base
         $this->assign('list', $list); // 賦值數據集
         $this->assign('count', $count);
         $this->assign('page', $page); // 賦值分頁輸出
+        $this->assign('code_type', $code_type); // 賦值分頁輸出
         return $this->fetch();
     }
 
@@ -126,18 +128,33 @@ class PayCode extends Base
     {
         if ($this->request->isPost()) {
             $data = $this->request->param();
-            $result = $this->validate($data, 'EwmPayCode');
+            $code_type = $this->request->param('code_type','30');
+            if ($code_type == 30){
+               // $result = $this->validate($data, 'EwmPayCode');
+                $result = $this->validate($data, 'EwmPayCode');
+
+            }else{
+                $result = $this->validate($data, 'UsdtPayCode');
+            }
             if (true !== $result) {
                 $this->error($result);
             }
+            $data['code_type'] = $code_type;
             $result = $codeLogic->addQRcode($data);
             if ($result['code'] = CodeEnum::ERROR) {
                 $this->error("上传失败," . $result['msg']);
             }
-            $this->success($result['msg'], url('lists'));
+            $this->success($result['msg'], url('lists').'?code_type='.$code_type);
+        }
+        $code_type = $this->request->param('code_type','30');
+        if ($code_type == 53){
+            $template = 'add_usdt';
+        }else{
+            $template = 'add';
         }
         $this->assign('banksList', $this->banks);
-        return $this->fetch();
+        $this->assign('code_type', $code_type);
+        return $this->fetch($template);
     }
 
      /**

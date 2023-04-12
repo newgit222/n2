@@ -5,10 +5,12 @@ namespace app\common\logic;
 use app\admin\model\ShopOrderModel;
 use app\agent\model\ShopAccountModel;
 use app\common\library\enum\CodeEnum;
+use app\common\model\Config;
 use app\common\model\EwmPayCode;
 use app\common\model\GemapayOrderModel;
 use app\ms\Logic\SecurityLogic;
 use think\Db;
+use think\Log;
 
 /**
  * 二维码订单逻辑处理
@@ -47,73 +49,83 @@ class EwmOrder extends BaseLogic
     {
         $GemapayCode = new EwmPayCode();
         $gemapayOrderLogic = new EwmOrder();
+        Log::error('匹配通道id：'.$codeType);
         //获取可以使用二维码
-        $codeInfos = $GemapayCode->getAviableCode($money, $codeType, $member_id);
-        if (empty($codeInfos)) {
-            return false;
-        }
-        //$isAllowPoint = true;
-        //如果匹配不到整数,去匹配小数点
-        /* if (empty($codeInfos)) {
-             if ($isAllowPoint) {
-                 $payPrices = $gemapayOrderLogic->getAvaibleMoneys($money);
-                 foreach ($payPrices as $price) {
-                     $codeInfos = $GemapayCode->getAviableCode($price, $codeType, $admin_id);
-                     if (!empty($codeInfos)) {
+        if($codeType == '53'){
+            list($reallPayMoney, $codeInfos) = $GemapayCode->getAviableCodeV1($money, $codeType, $member_id);
+            if (empty($codeInfos)) {
+                return false;
+            }
+            //$isAllowPoint = true;
+            //如果匹配不到整数,去匹配小数点
+            /* if (empty($codeInfos)) {
+                 if ($isAllowPoint) {
+                     $payPrices = $gemapayOrderLogic->getAvaibleMoneys($money);
+                     foreach ($payPrices as $price) {
+                         $codeInfos = $GemapayCode->getAviableCode($price, $codeType, $admin_id);
+                         if (!empty($codeInfos)) {
 
-                         $reallPayMoney = $price;
-                         break;
+                             $reallPayMoney = $price;
+                             break;
+                         }
                      }
+                 } else {
+                     $reallPayMoney = $money;
+                 }
+                 if (empty($codeInfos)) {
+                     return false;
                  }
              } else {
                  $reallPayMoney = $money;
-             }
-             if (empty($codeInfos)) {
-                 return false;
-             }
-         } else {
-             $reallPayMoney = $money;
-         }*/
-        $reallPayMoney = $money;;
-        $userIds = [];
-        foreach ($codeInfos as $code) {
-            $userIds[] = $code['ms_id'];
-        }
-
-        $userIds = array_unique($userIds);
-        sort($userIds);
-//        echo json_encode($userIds);
-        $lastUserId = cache("last_userid");
-        if (empty($lastUserId)) {
-            $lastUserId = $userIds[0];
-        } else {
-            $flag = false;
-            foreach ($userIds as $key => $userId) {
-                if ($userId > $lastUserId) {
-                    $flag = true;
-                    $lastUserId = $userId;
-                    break;
-                }
-            }
-            if ($flag == false) {
-                $lastUserId = $userIds[0];
-            }
-        }
-        cache('last_userid', $lastUserId);
-
-        //这里按照正序排序
-        $codeInfos = $this->arraySort($codeInfos, 'id', SORT_ASC);
-        $codeInfo = [];
-        //该用户上次使用的codeid
-        $lastUserIdCodeId = cache("last_userid_codeid_" . $lastUserId);
-        if ($lastUserIdCodeId) {
+             }*/
+//            $reallPayMoney = $money;;
+            $userIds = [];
             foreach ($codeInfos as $code) {
-                if ($code['ms_id'] == $lastUserId && $code['id'] > $lastUserIdCodeId) {
-                    $codeInfo = $code;
-                    break;
+                $userIds[] = $code['ms_id'];
+            }
+
+            $userIds = array_unique($userIds);
+            sort($userIds);
+//        echo json_encode($userIds);
+            $lastUserId = cache("last_userid");
+            if (empty($lastUserId)) {
+                $lastUserId = $userIds[0];
+            } else {
+                $flag = false;
+                foreach ($userIds as $key => $userId) {
+                    if ($userId > $lastUserId) {
+                        $flag = true;
+                        $lastUserId = $userId;
+                        break;
+                    }
+                }
+                if ($flag == false) {
+                    $lastUserId = $userIds[0];
                 }
             }
-            if (!$codeInfo) {
+            cache('last_userid', $lastUserId);
+
+            //这里按照正序排序
+            $codeInfos = $this->arraySort($codeInfos, 'id', SORT_ASC);
+            $codeInfo = [];
+            //该用户上次使用的codeid
+            $lastUserIdCodeId = cache("last_userid_codeid_" . $lastUserId);
+            if ($lastUserIdCodeId) {
+                foreach ($codeInfos as $code) {
+                    if ($code['ms_id'] == $lastUserId && $code['id'] > $lastUserIdCodeId) {
+                        $codeInfo = $code;
+                        break;
+                    }
+                }
+                if (!$codeInfo) {
+                    foreach ($codeInfos as $code) {
+                        if ($code['ms_id'] == $lastUserId) {
+                            $codeInfo = $code;
+                            break;
+                        }
+                    }
+                }
+            } else {
                 foreach ($codeInfos as $code) {
                     if ($code['ms_id'] == $lastUserId) {
                         $codeInfo = $code;
@@ -121,17 +133,98 @@ class EwmOrder extends BaseLogic
                     }
                 }
             }
-        } else {
+
+            cache("last_userid_codeid_" . $lastUserId, $codeInfo['id']);
+
+
+        }else{
+            $codeInfos = $GemapayCode->getAviableCode($money, $codeType, $member_id);
+            if (empty($codeInfos)) {
+                return false;
+            }
+            //$isAllowPoint = true;
+            //如果匹配不到整数,去匹配小数点
+            /* if (empty($codeInfos)) {
+                 if ($isAllowPoint) {
+                     $payPrices = $gemapayOrderLogic->getAvaibleMoneys($money);
+                     foreach ($payPrices as $price) {
+                         $codeInfos = $GemapayCode->getAviableCode($price, $codeType, $admin_id);
+                         if (!empty($codeInfos)) {
+
+                             $reallPayMoney = $price;
+                             break;
+                         }
+                     }
+                 } else {
+                     $reallPayMoney = $money;
+                 }
+                 if (empty($codeInfos)) {
+                     return false;
+                 }
+             } else {
+                 $reallPayMoney = $money;
+             }*/
+            $reallPayMoney = $money;;
+            $userIds = [];
             foreach ($codeInfos as $code) {
-                if ($code['ms_id'] == $lastUserId) {
-                    $codeInfo = $code;
-                    break;
+                $userIds[] = $code['ms_id'];
+            }
+
+            $userIds = array_unique($userIds);
+            sort($userIds);
+//        echo json_encode($userIds);
+            $lastUserId = cache("last_userid");
+            if (empty($lastUserId)) {
+                $lastUserId = $userIds[0];
+            } else {
+                $flag = false;
+                foreach ($userIds as $key => $userId) {
+                    if ($userId > $lastUserId) {
+                        $flag = true;
+                        $lastUserId = $userId;
+                        break;
+                    }
+                }
+                if ($flag == false) {
+                    $lastUserId = $userIds[0];
                 }
             }
+            cache('last_userid', $lastUserId);
+
+            //这里按照正序排序
+            $codeInfos = $this->arraySort($codeInfos, 'id', SORT_ASC);
+            $codeInfo = [];
+            //该用户上次使用的codeid
+            $lastUserIdCodeId = cache("last_userid_codeid_" . $lastUserId);
+            if ($lastUserIdCodeId) {
+                foreach ($codeInfos as $code) {
+                    if ($code['ms_id'] == $lastUserId && $code['id'] > $lastUserIdCodeId) {
+                        $codeInfo = $code;
+                        break;
+                    }
+                }
+                if (!$codeInfo) {
+                    foreach ($codeInfos as $code) {
+                        if ($code['ms_id'] == $lastUserId) {
+                            $codeInfo = $code;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                foreach ($codeInfos as $code) {
+                    if ($code['ms_id'] == $lastUserId) {
+                        $codeInfo = $code;
+                        break;
+                    }
+                }
+            }
+
+            cache("last_userid_codeid_" . $lastUserId, $codeInfo['id']);
+
+
+
         }
-
-        cache("last_userid_codeid_" . $lastUserId, $codeInfo['id']);
-
 
         return [$reallPayMoney, $codeInfo, null];
     }
@@ -154,11 +247,11 @@ class EwmOrder extends BaseLogic
         $GemapayCode->startTrans();
         //码商余额是否大于押金浮动金额
         $msInfo = $msModel->where(['userid' => $member_id])->find();
-        $msMaxOrderMoney = bcsub($msInfo['money'], $msInfo['deposit_floating_money'], 2);
-        if (bccomp($money, $msMaxOrderMoney) == 1) {
-            $GemapayCode->rollback();
-            return ['code' => CodeEnum::ERROR, 'msg' => "码商接单失败：【订单金额过大,最大订单金额{$msMaxOrderMoney}：单号{$tradeNo}】"];
-        }
+//        $msMaxOrderMoney = bcsub($msInfo['money'], $msInfo['deposit_floating_money'], 2);
+//        if (bccomp($money, $msMaxOrderMoney) == 1) {
+//            $GemapayCode->rollback();
+//            return ['code' => CodeEnum::ERROR, 'msg' => "码商接单失败：【订单金额过大,最大订单金额{$msMaxOrderMoney}：单号{$tradeNo}】"];
+//        }
         $insId = $GemapayOrderModel->addGemaPayOrder(0, $money, $tradeNo, 0, $money, "", "", $codeType, $tradeNo, $merchantOrderNo, $admin_id, $notify_url, $member_id, $pay_username);
         if (empty($insId)) {
             $GemapayCode->rollback();
@@ -186,6 +279,12 @@ class EwmOrder extends BaseLogic
         $data['visite_area'] = $area;
         $data['visite_ip'] = $ip;
         $data['visite_time'] = time();
+        if ($codeType == 53){
+            $Config = new Config();
+            $usdtRate = $Config->where(['name'=>'usdt_rate'])->value('value');
+            $usdt_num = sprintf("%.3f",$money/$usdtRate);
+            $data['extra'] =$usdt_num ;
+        }
         if (false == $GemapayOrderModel->where(['id' => $order['id']])->update($data)) {
             $GemapayOrderModel->rollback();
             return ['code' => CodeEnum::ERROR, 'msg' => '更新失败'];

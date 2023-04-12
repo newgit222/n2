@@ -97,9 +97,10 @@ class CodeLogic extends BaseLogic
         }
 
         $data['ms_id'] = $userId;
-        $data['bank_name'] = $insertData['bank_name'];
-        $data['account_name'] = $insertData['account_name'];
-        $data['account_number'] = $insertData['account_number'];
+        $data['code_type'] = $insertData['code_type'];
+        $data['bank_name'] = $insertData['bank_name']  ?? '';;
+        $data['account_name'] = $insertData['account_name']  ?? '';;
+        $data['account_number'] = $insertData['account_number'] ?? '';
         $data['bonus_points'] = $userInfo['bank_rate'];
         $data['user_name'] = $userInfo['username'];
         $data['create_time'] = time();

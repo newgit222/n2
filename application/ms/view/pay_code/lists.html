@@ -29,7 +29,7 @@
                             </div>
                         </form>
                         <div class="toolbar-btn-action">
-                            <a class="btn btn-primary m-r-5" href="{:url('add')}"><i class="mdi mdi-plus"></i> 新增</a>
+                            <a class="btn btn-primary m-r-5" href="{:url('add')}?code_type={$code_type}"><i class="mdi mdi-plus"></i> 新增</a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -59,12 +59,19 @@
                                         {/if}
                                     </td>
                                     <td style="font-size:18px; color: red "><?php echo $v['user_name'];?></td>
-
+                                    {if condition="$code_type eq 30"}
                                     <td style=" width: 10%; color: red ">
                                         开户行:<?php echo $v['bank_name'];?>
                                         账户:<?php echo $v['account_name'];?>
                                         卡号:<?php echo $v['account_number'];?>
                                     </td>
+                                    {else /}
+                                    <td style=" width: 10%; color: red ">
+                                        钱包名称:<?php echo $v['account_name'];?>
+                                        <br>
+                                        钱包地址:<?php echo $v['account_number'];?>
+                                    </td>
+                                    {/if}
                                     <?php  $statusMsg=['已禁用','使用中']; $paystatusMsg=['允许支付','<span style="color:red">支付暂用中</span>'];?>
                                     <td style="font-size:10px;">
                                         {if condition="$v['status'] == 0"}
@@ -86,7 +93,7 @@
                                         {else /}
                                         <a name="forbid" title="冻结"  class="btn btn-xs btn-danger" href="javascript:confirmimportances('{:url('disactiveCode',array('code_id'=>$v['id']))}')">冻结</a>
                                         {/if}
-					<!!--   <a class="btn btn-xs btn-danger"   href="javascript:confirmimportances('<?php echo url('del',array('id'=>$v['id']));?>')" >删除</a>-->
+					<!--   <a class="btn btn-xs btn-danger"   href="javascript:confirmimportances('<?php echo url('del',array('id'=>$v['id']));?>')" >删除</a>-->
                                     </td>
 
                                 </tr>

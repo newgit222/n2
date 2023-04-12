@@ -14,26 +14,15 @@
                         <form id="inputForm" action="{:url('add')}?code_type={$code_type}" method="post" class="row ">
 
                             <div id="bank_show" >
+
                                 <div class="form-group col-md-12">
-                                    <label for="bank_id">开户行</label>
-				    <input type="text" class="form-control" id="bank__name" name="bank_name" value="" placeholder="请输入开户行名称" />
-                           <!--         <div class="form-controls">
-                                        <select name="bank_name" class="form-control" id="bank_id">
-                                            {foreach $banksList as $v}
-                                            <option value="{$v}"  >{$v}</option>
-                                            {/foreach}
-                                        </select>
-			   </div>-->
+                                    <label for="bank_account_name">钱包名称</label>
+                                    <input type="text" class="form-control" id="bank_account_name" name="account_name" value="" placeholder="请输入钱包名称" />
                                 </div>
 
                                 <div class="form-group col-md-12">
-                                    <label for="bank_account_name">开户姓名</label>
-                                    <input type="text" class="form-control" id="bank_account_name" name="account_name" value="" placeholder="请输入开户姓名" />
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label for="bank_account_number">开户卡号</label>
-                                    <input type="text" class="form-control" id="bank_account_number" name="account_number" value="" placeholder="请输入开户卡号" />
+                                    <label for="bank_account_number">钱包地址</label>
+                                    <input type="text" class="form-control" id="bank_account_number" name="account_number" value="" placeholder="请输入钱包地址" />
                                 </div>
 
                             </div>

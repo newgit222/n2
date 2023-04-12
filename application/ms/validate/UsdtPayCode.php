@@ -12,22 +12,20 @@ use think\Validate;
  * Class EwmPayCode
  * @package app\ms\validate
  */
-class EwmPayCode extends Validate
+class UsdtPayCode extends Validate
 {
 
     protected $rule = [
-        'bank_name' => 'require|max:25',
-        'account_name' => 'require|max:5|vlidateError|checkIsChinese',
-        'account_number' => 'require|number|max:30',
+        'account_name' => 'require|chsAlphaNum',
+        'account_number' => 'require|alphaNum|max:40',
         'security' => 'require|max:25',
     ];
 
     protected $message = [
-        'account_name.require' => '开户姓名必填',
-        'account_name.max' => '开户姓名最大五位',
-        'account_number.require' => '银行卡必填',
-        'account_number.number' => '银行卡卡号必须是整数',
-        'bank_name.require' => '开户行必填',
+        'account_name.require' => '钱包名称必填',
+        'account_name.chsAlphaNum' => '钱包名称只能是汉字、字母和数字',
+        'account_number.require' => '钱包地址必填',
+        'account_number.number' => '钱包地址必须是数字和字母',
         'security.require' => '安全码必填',
     ];
 
