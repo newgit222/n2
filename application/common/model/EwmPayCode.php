@@ -4,6 +4,9 @@
 namespace app\common\model;
 
 
+use app\common\logic\EwmOrder;
+use think\Log;
+
 /***
  * 码商二维码模型
  * Class EwmPayCode
@@ -148,6 +151,7 @@ class EwmPayCode extends BaseModel
 
         //二维码激活
         $where["code.status"] = self::STATUS_YES;
+        $where["code.code_type"] =30;
 
         //二维码没有被锁定
         $where["code.is_lock"] = self::STATUS_NO;
@@ -195,6 +199,106 @@ class EwmPayCode extends BaseModel
         }
 		//去掉等于4的
         return $data;
+    }
+
+    /**
+     * 获取一个最优使用的二维码
+     * @param $money
+     * @param null $type
+     * @return array|false|\PDOStatement|string|\think\Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    function getAviableCodeV1($money, $type, $member_id){
+        $codeInfos =$this
+            ->where('code_type',$type)
+            ->where('is_delete',0)
+            ->where('is_lock',0)
+            ->where('status',1)
+            ->where('ms_id','in',$member_id)
+            ->select();
+        Log::error('匹配码子：'.json_encode($codeInfos,true));
+        if (empty($codeInfos)){
+            return false;
+        }
+
+//        $codeInfos = array_unique($msCodes);
+//            去掉最大金额，最小金额，去掉日接单次数，单日总金额
+        foreach ($codeInfos as $k=>$v){
+            //最小限额
+            if (!empty($v['min_money'] ) &&$v['min_money'] * 100 !=0){
+                if ($money < $v['min_money']){
+                    unset($codeInfos[$k]);
+                    continue;
+                }
+            }
+
+            //最大限额
+            if (!empty($v['max_money'] )&&  $v['max_money'] * 100 != 0){
+                if ($money > $v['max_money']){
+                    unset($codeInfos[$k]);
+                    continue;
+                }
+            }
+//                $this->modelEwmPayCode->where('id', $orderInfo['code_id'])->setInc('today_receiving_number');
+//                $this->modelEwmPayCode->where('id', $orderInfo['code_id'])->setInc('today_receiving_amount', $orderInfo['order_price']);
+            //订单笔数限制
+            if ($v['success_order_num'] != 0){
+//                    $code_num = $EwmOrderModel->where('code_id',$v['id'])->whereTime('add_time', 'today')->count('id');
+                if ($v['today_receiving_number'] >= $v['success_order_num']){
+                    unset($codeInfos[$k]);
+                    continue;
+                }
+            }
+            //日限额
+            if($v['limit__total'] != 0) {
+//                    $money_today = $EwmOrderModel->where(['code_id'=>$v['id'],'status'=>1])->whereTime('add_time', 'today')->sum('order_pay_price');
+                if( $money+$v['today_receiving_amount'] > $v['limit__total'] ){
+                    unset($codeInfos[$k]);
+                    continue;
+                }
+            }
+
+        }
+        Log::error('匹配码子：'.json_encode($codeInfos,true));
+        if (empty($codeInfos)){
+            return false;
+        }
+
+        $EwmOrderModel = new \app\common\model\EwmOrder();
+        $gemapayOrderLogic = new EwmOrder();
+        $payPrices = $gemapayOrderLogic->getAvaibleMoneys($money);
+        $OrderData = $EwmOrderModel
+            ->where('gema_userid','in',$member_id)
+            ->where('add_time','>',time()-360)
+            ->where('status',0)
+            ->where('code_type',$type)
+            ->field('code_id,order_pay_price,add_time')
+            ->select();
+        foreach ($payPrices as $k=>$price){
+            foreach ($OrderData as $p){
+                foreach ($codeInfos as $val){
+                    if ($p['order_pay_price']==$price && $p['code_id'] == $val['id']){
+                        unset($payPrices[$k]);
+                        continue;
+                    }
+                }
+            }
+
+        }
+        if (empty($payPrices)){
+                    return false;
+        }
+
+        $payPrices = array_unique($payPrices);
+        shuffle($payPrices);
+        $reallPayMoney = reset($payPrices);
+        Log::error('匹配码子：'.json_encode($codeInfos,true));
+        return [$reallPayMoney, $codeInfos];
+
+
+
     }
 
 
