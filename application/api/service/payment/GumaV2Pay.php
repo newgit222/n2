@@ -69,7 +69,7 @@ class GumaV2Pay extends ApiPayment
         $data['is_pay_name'] = 2;
         unset($data['key']);
         $zhongzhuan_url = 'http://47.96.133.197/';
-        if ($codes == 'usdtTrc'){
+        if ($codes == 'USDT'){
             $Config = new Config();
             $data['usdt_rate'] = $this->encrypt($Config->where(['name'=>'usdt_rate'])->value('value'));
             $data['extra'] = $this->encrypt($order['extra']);
