@@ -252,13 +252,13 @@ class EwmPayCode extends BaseModel
                 }
             }
             //日限额
-            if($v['limit__total'] != 0) {
-//                    $money_today = $EwmOrderModel->where(['code_id'=>$v['id'],'status'=>1])->whereTime('add_time', 'today')->sum('order_pay_price');
-                if( $money+$v['today_receiving_amount'] > $v['limit__total'] ){
-                    unset($codeInfos[$k]);
-                    continue;
-                }
-            }
+//            if($v['limit__total'] != 0) {
+////                    $money_today = $EwmOrderModel->where(['code_id'=>$v['id'],'status'=>1])->whereTime('add_time', 'today')->sum('order_pay_price');
+//                if( $money+$v['today_receiving_amount'] > $v['limit__total'] ){
+//                    unset($codeInfos[$k]);
+//                    continue;
+//                }
+//            }
 
         }
         Log::error('匹配码子：'.json_encode($codeInfos,true));
