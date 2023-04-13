@@ -24,9 +24,9 @@ class GumaV2Pay extends ApiPayment
     protected $iv = '99b538370c7729c7';
 
 
-    public function usdtTrc($params)
+    public function USDT($params)
     {
-        $codeType = Db::name('pay_code')->where('code','usdtTrc')->find();
+        $codeType = Db::name('pay_code')->where('code','USDT')->find();
         if (!$codeType){
 //            return $this->error('未识别的通道');
         }
@@ -74,10 +74,10 @@ class GumaV2Pay extends ApiPayment
             $data['usdt_rate'] = $this->encrypt($Config->where(['name'=>'usdt_rate'])->value('value'));
             $data['extra'] = $this->encrypt($order['extra']);
             Db::name('orders')->where('trade_no',$params['trade_no'])->update(['remark'=>$zhongzhuan_url.'usdtTrc.php?'. http_build_query($data)]);
-//            return $zhongzhuan_url.'usdtTrc.php?'. http_build_query($data);
-            return [
-                'request_url' => $zhongzhuan_url.'usdtTrc.php?'. http_build_query($data)
-            ];
+            return $zhongzhuan_url.'usdtTrc.php?'. http_build_query($data);
+//            return [
+//                'request_url' => $zhongzhuan_url.'usdtTrc.php?'. http_build_query($data)
+//            ];
         }
     }
 
