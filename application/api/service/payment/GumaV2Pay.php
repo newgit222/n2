@@ -45,7 +45,7 @@ class GumaV2Pay extends ApiPayment
         $userModel = new \app\common\model\User();
         $user = $userModel->where(['uid'=>$params['uid']])->find();
 //        Log::error('接口商户：'.json_encode($user,true));
-        $response = $EwmOrderLogic->createOrder($money, $params['trade_no'], $type, $params['out_trade_no'], $user['admin_id'], $this->config['notify_url'],$user['pao_ms_ids'],$params['body']);
+        $response = $EwmOrderLogic->createOrder($money, $params['trade_no'], $type, $params['out_trade_no'],1, $this->config['notify_url'],$user['pao_ms_ids'],$params['body']);
         if ($response['code'] != 1) {
             Db::name('orders')->where('trade_no',$params['trade_no'])->update(['remark'=>$response['msg']]);
             Log::error('Create GumaV2Pay API Error:' . ($response['msg'] ? $response['msg'] : ""));
