@@ -234,9 +234,17 @@ class Cron
 
         return false;
     }
-
+    const SUSSCE = 1;
+    const FAIL = 1;
+    /**
+     * 构建返回数据对象
+     *
+     * @author 勇敢的小笨羊 <brianwaring98@gmail.com>
+     *
+     * @param $data
+     * @return array
+     */
     private function buildSignData($data,$md5Key,$need_remark=false){
-
         //除去不需要字段
         unset($data['id']);
         unset($data['uid']);
@@ -257,7 +265,9 @@ class Cron
         unset($data['extra']);
         unset($data['subject']);
         unset($data['bd_remarks']);
-        unset($data['remark']);
+        if(!$need_remark){
+            unset($data['remark']);
+        }
         unset($data['visite_show_time']);
         unset($data['real_need_amount']);
         unset($data['image_url']);
@@ -266,9 +276,7 @@ class Cron
         unset($data['request_elapsed_time']);
 
         $data['amount'] = sprintf("%.2f", $data['amount']);
-
-        $data['order_status'] = 1;
-
+        $data['order_status'] = self::SUSSCE;
         ksort($data);
 
         $signData = "";
@@ -279,12 +287,13 @@ class Cron
         }
         $str = $signData."key=".$md5Key;
 
+        print("<info>md5 str:".$str."</info>\n");
+        Log::notice("md5 str: ".$str);
         $sgin = md5($str);
         $data['sign'] = $sgin;
         //返回
         return $data;
     }
-
 
 
 
