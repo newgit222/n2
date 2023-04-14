@@ -141,7 +141,7 @@ class Cron
         $where = array();
         $where['uid'] = $data['uid'];
         $LogicApi = new \app\common\logic\Api();
-        $admin_id =Db::name('user')->where($where)->value('admin_id');
+        //$admin_id =Db::name('user')->where($where)->value('admin_id');
         $appKey = $LogicApi->getApiInfo($where, "key",($data['uid']==100063||$data['uid']==100068|| $data['uid']==100067));
         $to_sign_data =  $this->buildSignData($data, $appKey["key"],($data['uid']==100063||$data['uid']==100068|| $data['uid']==100067));
         //签名串
