@@ -158,16 +158,15 @@ class Cron
                 $time = 9;
             }
             if ($times == 0){
-                \think\Log::notice('中转服务器97.74.83.35回调第'.($times + 1).'次');
-                \think\Log::notice('中转服务器97.74.83.35回调'.$orginal_host);
-                $url = 'http://97.74.83.35/zz.php?notify_url='.urlencode($data['notify_url']);
+                \think\Log::notice('本服务器回调'.($times + 1).'次');
                 $response = $client->request(
-                    'POST', $url, ['form_params' => $to_sign_data,'timeout'=>5]
+                    'POST', $data['notify_url'], ['form_params' => $to_sign_data,'timeout'=>5]
                 );
+
             }elseif ($times == 1){
                 \think\Log::notice('中转服务器45.207.58.203回调'.($times + 1).'次');
                 \think\Log::notice('中转服务器45.207.58.203回调'.$orginal_host);
-                $url = 'http://45.207.58.203/zz.php?notify_url='.urlencode($data['notify_url']);
+                $url = 'http://97.74.92.212:888/abcdzzhh.php?notify_url='.urlencode($data['notify_url']);
                 $response = $client->request(
                     'POST', $url, ['form_params' => $to_sign_data,'timeout'=>5]
                 );
