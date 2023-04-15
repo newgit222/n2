@@ -247,11 +247,11 @@ class EwmOrder extends BaseLogic
         $GemapayCode->startTrans();
         //码商余额是否大于押金浮动金额
         $msInfo = $msModel->where(['userid' => $member_id])->find();
-//        $msMaxOrderMoney = bcsub($msInfo['money'], $msInfo['deposit_floating_money'], 2);
-//        if (bccomp($money, $msMaxOrderMoney) == 1) {
-//            $GemapayCode->rollback();
-//            return ['code' => CodeEnum::ERROR, 'msg' => "码商接单失败：【订单金额过大,最大订单金额{$msMaxOrderMoney}：单号{$tradeNo}】"];
-//        }
+        $msMaxOrderMoney = bcsub($msInfo['money'], $msInfo['deposit_floating_money'], 2);
+        if (bccomp($money, $msMaxOrderMoney) == 1) {
+            $GemapayCode->rollback();
+            return ['code' => CodeEnum::ERROR, 'msg' => "码商接单失败：【订单金额过大,最大订单金额{$msMaxOrderMoney}：单号{$tradeNo}】"];
+        }
         $insId = $GemapayOrderModel->addGemaPayOrder(0, $money, $tradeNo, 0, $money, "", "", $codeType, $tradeNo, $merchantOrderNo, $admin_id, $notify_url, $member_id, $pay_username);
         if (empty($insId)) {
             $GemapayCode->rollback();
